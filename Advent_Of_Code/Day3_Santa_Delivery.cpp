@@ -97,7 +97,7 @@ void turn(char ch, Position& actPos)
 	}
 }
 
-int main()
+int main_day3()
 {
 	freopen("in.txt", "r", stdin);
 

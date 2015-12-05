@@ -38,9 +38,12 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Label="UserMacros">
+    <NuGetPackageImportStamp>34d2fb50</NuGetPackageImportStamp>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\VSZM\Documents\Visual Studio 2013\Projects\Advent_Of_Code\packages\cryptopp.5.6.2.35\build\native\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -79,11 +82,39 @@
     <ClCompile Include="Day1_Santa_Floor.cpp" />
     <ClCompile Include="Day2_Present_Wrapping.cpp" />
     <ClCompile Include="Day3_Santa_Delivery.cpp" />
+    <ClCompile Include="Day4_MD5.cpp" />
+    <ClCompile Include="Day5_Nice_Strings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="in.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\cryptopp.v120.windesktop.msvcstl.dyn.rt-static-Win32.5.6.2.34\build\native\cryptopp.v120.windesktop.msvcstl.dyn.rt-static-Win32.targets" Condition="Exists('..\packages\cryptopp.v120.windesktop.msvcstl.dyn.rt-static-Win32.5.6.2.34\build\native\cryptopp.v120.windesktop.msvcstl.dyn.rt-static-Win32.targets')" />
+    <Import Project="..\packages\cryptopp.v120.windesktop.msvcstl.dyn.rt-dyn-Win32.5.6.2.34\build\native\cryptopp.v120.windesktop.msvcstl.dyn.rt-dyn-Win32.targets" Condition="Exists('..\packages\cryptopp.v120.windesktop.msvcstl.dyn.rt-dyn-Win32.5.6.2.34\build\native\cryptopp.v120.windesktop.msvcstl.dyn.rt-dyn-Win32.targets')" />
+    <Import Project="..\packages\cryptopp.v120.windesktop.msvcstl.dyn.rt-static-x64.5.6.2.34\build\native\cryptopp.v120.windesktop.msvcstl.dyn.rt-static-x64.targets" Condition="Exists('..\packages\cryptopp.v120.windesktop.msvcstl.dyn.rt-static-x64.5.6.2.34\build\native\cryptopp.v120.windesktop.msvcstl.dyn.rt-static-x64.targets')" />
+    <Import Project="..\packages\cryptopp.v120.windesktop.msvcstl.dyn.rt-dyn-x64.5.6.2.34\build\native\cryptopp.v120.windesktop.msvcstl.dyn.rt-dyn-x64.targets" Condition="Exists('..\packages\cryptopp.v120.windesktop.msvcstl.dyn.rt-dyn-x64.5.6.2.34\build\native\cryptopp.v120.windesktop.msvcstl.dyn.rt-dyn-x64.targets')" />
+    <Import Project="..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-Win32.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-Win32.targets" Condition="Exists('..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-Win32.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-Win32.targets')" />
+    <Import Project="..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-Win32.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-Win32.targets" Condition="Exists('..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-Win32.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-Win32.targets')" />
+    <Import Project="..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-x64.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-x64.targets" Condition="Exists('..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-x64.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-x64.targets')" />
+    <Import Project="..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-x64.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-x64.targets" Condition="Exists('..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-x64.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-x64.targets')" />
+    <Import Project="..\packages\cryptopp.5.6.2.35\build\native\cryptopp.targets" Condition="Exists('..\packages\cryptopp.5.6.2.35\build\native\cryptopp.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\cryptopp.v120.windesktop.msvcstl.dyn.rt-static-Win32.5.6.2.34\build\native\cryptopp.v120.windesktop.msvcstl.dyn.rt-static-Win32.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cryptopp.v120.windesktop.msvcstl.dyn.rt-static-Win32.5.6.2.34\build\native\cryptopp.v120.windesktop.msvcstl.dyn.rt-static-Win32.targets'))" />
+    <Error Condition="!Exists('..\packages\cryptopp.v120.windesktop.msvcstl.dyn.rt-dyn-Win32.5.6.2.34\build\native\cryptopp.v120.windesktop.msvcstl.dyn.rt-dyn-Win32.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cryptopp.v120.windesktop.msvcstl.dyn.rt-dyn-Win32.5.6.2.34\build\native\cryptopp.v120.windesktop.msvcstl.dyn.rt-dyn-Win32.targets'))" />
+    <Error Condition="!Exists('..\packages\cryptopp.v120.windesktop.msvcstl.dyn.rt-static-x64.5.6.2.34\build\native\cryptopp.v120.windesktop.msvcstl.dyn.rt-static-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cryptopp.v120.windesktop.msvcstl.dyn.rt-static-x64.5.6.2.34\build\native\cryptopp.v120.windesktop.msvcstl.dyn.rt-static-x64.targets'))" />
+    <Error Condition="!Exists('..\packages\cryptopp.v120.windesktop.msvcstl.dyn.rt-dyn-x64.5.6.2.34\build\native\cryptopp.v120.windesktop.msvcstl.dyn.rt-dyn-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cryptopp.v120.windesktop.msvcstl.dyn.rt-dyn-x64.5.6.2.34\build\native\cryptopp.v120.windesktop.msvcstl.dyn.rt-dyn-x64.targets'))" />
+    <Error Condition="!Exists('..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-Win32.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-Win32.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-Win32.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-Win32.targets'))" />
+    <Error Condition="!Exists('..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-Win32.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-Win32.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-Win32.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-Win32.targets'))" />
+    <Error Condition="!Exists('..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-x64.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-x64.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-x64.targets'))" />
+    <Error Condition="!Exists('..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-x64.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-x64.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-x64.targets'))" />
+    <Error Condition="!Exists('..\packages\cryptopp.5.6.2.35\build\native\cryptopp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cryptopp.5.6.2.35\build\native\cryptopp.targets'))" />
+  </Target>
 </Project>
