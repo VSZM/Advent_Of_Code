@@ -1,24 +1,30 @@
 #include <iostream>
 #include <cryptopp/md5.h>
-#include <cryptopp/hex.h>
 #include<string>
 
 
-int main_day4()
+bool starts_with_5_zeroes_in_hex(byte b[])
 {
-	std::string input = "abcdef";
+	return b[0] == 0 && b[1] == 0 && b[2] < 16;
+}
+
+bool starts_with_6_zeroes_in_hex(byte b[])
+{
+	return b[0] == 0 && b[1] == 0 && b[2] == 0;
+}
+
+int main()
+{
+	std::string input = "ckczppom";
 	std::string tmp;
 
-	int num = 609040;
-	byte result[32];
+	int num = 1;
+	byte result[CryptoPP::MD5::DIGESTSIZE];
 
-	CryptoPP::HexEncoder encoder;
-
-
+	
 	while (tmp = input + std::to_string(num), CryptoPP::MD5().CalculateDigest(result, (byte*)tmp.c_str(), tmp.length()),
-		!(tmp[0] == 0 && tmp[1] == 0 && tmp[2] && tmp[3] == 0 && tmp[4] == 0))
+		!(starts_with_6_zeroes_in_hex(result)))
 	{
-		std::cout << num << result << std::endl;
 		++num;
 	}
 
