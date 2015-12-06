@@ -13,7 +13,7 @@ bool starts_with_6_zeroes_in_hex(byte b[])
 	return b[0] == 0 && b[1] == 0 && b[2] == 0;
 }
 
-int main()
+int main_day4()
 {
 	std::string input = "ckczppom";
 	std::string tmp;

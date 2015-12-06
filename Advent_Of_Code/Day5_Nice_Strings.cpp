@@ -48,7 +48,7 @@ bool is_nice_part2(std::string word)
 	return contains_pair_twice && contains_repetition;
 }
 
-int main()
+int main_day5()
 {
 	freopen("in.txt", "r", stdin);
 
