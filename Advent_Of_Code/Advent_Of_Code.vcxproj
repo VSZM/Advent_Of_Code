@@ -39,11 +39,11 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
-    <NuGetPackageImportStamp>34d2fb50</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>7afb920a</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\VSZM\Documents\Visual Studio 2013\Projects\Advent_Of_Code\packages\cryptopp.5.6.2.35\build\native\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\VSZM\Documents\Visual Studio 2013\Projects\Advent_Of_Code\packages\boost.1.59.0.0\lib\native\include;C:\Users\VSZM\Documents\Visual Studio 2013\Projects\Advent_Of_Code\packages\cryptopp.5.6.2.35\build\native\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -85,6 +85,7 @@
     <ClCompile Include="Day4_MD5.cpp" />
     <ClCompile Include="Day5_Nice_Strings.cpp" />
     <ClCompile Include="Day6_Christmas_Lights.cpp" />
+    <ClCompile Include="Day7_Interpreter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="in.txt" />
@@ -103,6 +104,7 @@
     <Import Project="..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-x64.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-x64.targets" Condition="Exists('..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-x64.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-x64.targets')" />
     <Import Project="..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-x64.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-x64.targets" Condition="Exists('..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-x64.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-x64.targets')" />
     <Import Project="..\packages\cryptopp.5.6.2.35\build\native\cryptopp.targets" Condition="Exists('..\packages\cryptopp.5.6.2.35\build\native\cryptopp.targets')" />
+    <Import Project="..\packages\boost.1.59.0.0\build\native\boost.targets" Condition="Exists('..\packages\boost.1.59.0.0\build\native\boost.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -117,5 +119,6 @@
     <Error Condition="!Exists('..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-x64.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-x64.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-static-x64.targets'))" />
     <Error Condition="!Exists('..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-x64.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-x64.5.6.2.34\build\native\cryptopp.v140.windesktop.msvcstl.dyn.rt-dyn-x64.targets'))" />
     <Error Condition="!Exists('..\packages\cryptopp.5.6.2.35\build\native\cryptopp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cryptopp.5.6.2.35\build\native\cryptopp.targets'))" />
+    <Error Condition="!Exists('..\packages\boost.1.59.0.0\build\native\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.59.0.0\build\native\boost.targets'))" />
   </Target>
 </Project>

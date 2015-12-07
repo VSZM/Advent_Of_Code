@@ -116,7 +116,7 @@ void interpret_action_part2(int i, int j, Action action)
 	}
 }
 
-int main()
+int main_day6()
 {
 	freopen("in.txt", "r", stdin);
 
