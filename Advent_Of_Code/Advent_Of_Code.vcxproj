@@ -86,6 +86,7 @@
     <ClCompile Include="Day5_Nice_Strings.cpp" />
     <ClCompile Include="Day6_Christmas_Lights.cpp" />
     <ClCompile Include="Day7_Interpreter.cpp" />
+    <ClCompile Include="Day8_Strings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="in.txt" />

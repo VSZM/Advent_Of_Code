@@ -70,7 +70,7 @@ uint16_t evaluate(std::string expression)
 	throw "Unexpected expression: " + expression;
 }
 
-int main()
+int main_day7()
 {
 	freopen("in.txt", "r", stdin);
 	freopen("out.txt", "w", stdout);
