@@ -38,7 +38,7 @@ int get_representation_length(std::string word)// PART 2
 	return length + word.length();
 }
 
-int main()
+int main_day8()
 {
 	freopen("in.txt", "r", stdin);
 
