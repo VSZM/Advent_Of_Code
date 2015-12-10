@@ -108,7 +108,7 @@ int Backtrack_Solver()
 }
 
 
-int main()
+int main_day9()
 {
 	freopen("in.txt", "r", stdin);
 

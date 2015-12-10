@@ -89,6 +89,7 @@
     <ClCompile Include="Day7_Interpreter.cpp" />
     <ClCompile Include="Day8_Strings.cpp" />
     <ClCompile Include="Day9_ShortestPath.cpp" />
+    <ClCompile Include="Day9_ShortestPath_Ver2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="in.txt" />
