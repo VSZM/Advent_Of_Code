@@ -18,7 +18,7 @@ string say_numbers(string str)
 	return ret;
 }
 
-int main()
+int main_day10()
 {
 	string number = "1113222113";
 
