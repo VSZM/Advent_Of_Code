@@ -6,6 +6,7 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Advent_Of_Code_11_20
 {
@@ -15,12 +16,14 @@ namespace Advent_Of_Code_11_20
         [STAThread]
         static void Main(string[] args)
         {
+			string[] lines = File.ReadAllLines( "../../input.txt" );
+
             Stopwatch sw = new Stopwatch();
 
-            Day11Hacking solvable = new Day11Hacking();
+            ISolvable solvable = new Day12JasonBourne();
 
             sw.Start();
-            string part1_solution = Day11Hacking.Solve(new[] { "cqjxjnds" });
+			string part1_solution = solvable.Solve( lines, false);
             sw.Stop();
 
             Console.WriteLine("Part 1 solution = '{0}'", part1_solution);
@@ -35,7 +38,7 @@ namespace Advent_Of_Code_11_20
             Console.WriteLine("Starting Part 2 calculation");
             
             sw.Start();
-            string part2_solution = Day11Hacking.Solve(new[] { Day11Hacking.Increment_String(part1_solution) });
+			string part2_solution = solvable.Solve( lines, true );
             sw.Stop();
 
             Console.WriteLine("Part 2 solution = '{0}'", part2_solution);

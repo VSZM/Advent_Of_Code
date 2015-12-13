@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Advent_Of_Code_11_20
 {
-    class Day11Hacking
+    class Day11Hacking : ISolvable
     {
         public static string Increment_String(string str)
         {
@@ -43,7 +43,7 @@ namespace Advent_Of_Code_11_20
         }
 
 
-        public static string Solve(string[] inputLines)
+        public string Solve(string[] inputLines, bool is_part_2)
         {
             while (!Is_Valid_Password(inputLines[0]))
                 inputLines[0] = Increment_String(inputLines[0]);
@@ -81,5 +81,5 @@ namespace Advent_Of_Code_11_20
 
             return contains_3_increasing && pair_chars.Count >= 2;
         }
-    }
+	}
 }
