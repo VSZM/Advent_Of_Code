@@ -1,25 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Linq;
 
 namespace Advent_Of_Code_11_20
 {
 	class Day12JasonBourne : ISolvable
 	{
-		public string Solve(string[] lines, bool is_part_2)
+		public string Solve(string[] inputLines, bool isPart2)
 		{
-			string json_str = lines.Aggregate( (a, b) => a + b );
+			string json_str = inputLines.Aggregate( (a, b) => a + b );
 
 			dynamic json_obj = JsonConvert.DeserializeObject( json_str );
 
 			int sum = 0;
 
-			if ( is_part_2 )
+			if ( isPart2 )
 			{
 				IEnumerable<JToken> descendants = json_obj.Descendants();
 

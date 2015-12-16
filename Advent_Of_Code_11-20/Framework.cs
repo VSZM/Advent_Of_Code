@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 
 namespace Advent_Of_Code_11_20
 {
@@ -20,7 +15,7 @@ namespace Advent_Of_Code_11_20
 
             Stopwatch sw = new Stopwatch();
 
-            ISolvable solvable = new Day12JasonBourne();
+            ISolvable solvable = new Day15Cooking();
 
             sw.Start();
 			string part1_solution = solvable.Solve( lines, false);

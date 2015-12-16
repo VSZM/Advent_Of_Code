@@ -14,7 +14,7 @@
     <ProjectGuid>{B7822923-E08E-4776-AFCB-1D42865516F0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Advent_Of_Code</RootNamespace>
-    <ProjectName>Advent_Of_Code_1_10</ProjectName>
+    <ProjectName>Advent_Of_Code_Cpp_Solutions</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -81,6 +81,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Day10_Saythenumbers.cpp" />
+    <ClCompile Include="Day13_RoundTable.cpp" />
     <ClCompile Include="Day1_Santa_Floor.cpp" />
     <ClCompile Include="Day2_Present_Wrapping.cpp" />
     <ClCompile Include="Day3_Santa_Delivery.cpp" />

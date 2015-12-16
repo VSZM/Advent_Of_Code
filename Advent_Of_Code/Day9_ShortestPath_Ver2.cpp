@@ -68,7 +68,7 @@ int Maximum_Cost()
 	return max_cost;
 }
 
-int main()
+int main_day9_v2()
 {
 	freopen("in.txt", "r", stdin);
 

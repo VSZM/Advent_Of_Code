@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Advent_Of_Code_11_20
 {
@@ -43,7 +40,7 @@ namespace Advent_Of_Code_11_20
         }
 
 
-        public string Solve(string[] inputLines, bool is_part_2)
+        public string Solve(string[] inputLines, bool isPart2)
         {
             while (!Is_Valid_Password(inputLines[0]))
                 inputLines[0] = Increment_String(inputLines[0]);
