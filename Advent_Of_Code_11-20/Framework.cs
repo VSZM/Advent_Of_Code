@@ -15,7 +15,7 @@ namespace Advent_Of_Code_11_20
 
             Stopwatch sw = new Stopwatch();
 
-            ISolvable solvable = new Day15Cooking();
+            ISolvable solvable = new Day16Aunt();
 
             sw.Start();
 			string part1_solution = solvable.Solve( lines, false);

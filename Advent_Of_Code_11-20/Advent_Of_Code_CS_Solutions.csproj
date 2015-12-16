@@ -49,6 +49,7 @@
     <Compile Include="Day11_Hacking.cs" />
     <Compile Include="Day12_Jason_Bourne.cs" />
     <Compile Include="Day15_Cooking.cs" />
+    <Compile Include="Day16_Aunt.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="ISolvable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
