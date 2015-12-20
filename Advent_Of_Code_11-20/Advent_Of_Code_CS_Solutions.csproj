@@ -50,6 +50,8 @@
     <Compile Include="Day12_Jason_Bourne.cs" />
     <Compile Include="Day15_Cooking.cs" />
     <Compile Include="Day16_Aunt.cs" />
+    <Compile Include="Day17_Storage_Combinations.cs" />
+    <Compile Include="Day18_Christmas_Lights_Animated.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="ISolvable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
