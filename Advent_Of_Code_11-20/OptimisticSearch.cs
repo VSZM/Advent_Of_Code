@@ -11,15 +11,20 @@
         {
             State act_state = Problem.StartState;
 
-            while (!Problem.Is_Goal_State(act_state))
+            while (act_state!= null && !Problem.Is_Goal_State(act_state))
             {
                 Operator oper = Select_Operator(act_state);
-                
-                if(oper == null) // All operators have been tried out
-                    break;
+
+                if (oper == null) // All operators have been tried out
+                {
+                    act_state = act_state.Parent;
+                    continue;
+                }
 
                 act_state.OperatorsTried.Add(oper);
-                State new_state = act_state.Apply_Operator(act_state, oper);
+                
+                State new_state = oper.Apply(act_state);
+                act_state = new_state;
             }
 
             if (!Problem.Is_Goal_State(act_state)) return false;

@@ -20,7 +20,7 @@ namespace Advent_Of_Code_11_20
                     .Where(oper => !(actState.OperatorsTried as IEnumerable<Operator>).Contains(oper))
                     .ToList();
 
-            return avalible_operators.Count == 0 ? null : avalible_operators.OrderBy(oper => Heuristic.Heuristic_Distance(oper.ToState, Problem)).First();
+            return avalible_operators.Count == 0 ? null : avalible_operators.OrderBy(oper => Heuristic.Heuristic_Distance(oper.Apply(actState), Problem)).First();
         }
     }
 }

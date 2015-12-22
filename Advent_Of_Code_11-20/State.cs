@@ -10,15 +10,13 @@ namespace Advent_Of_Code_11_20
         public int CostSoFar { get; set; }
         public HashSet<Operator> OperatorsTried { get; set; }
 
-        public State(State parent, Operator parentOperator, int costSoFar)
+        protected State(State parent, Operator parentOperator, int costSoFar)
         {
             OperatorsTried = new HashSet<Operator>();
             Parent = parent;
             ParentOperator = parentOperator;
             CostSoFar = costSoFar;
         }
-
-        public abstract State Apply_Operator(State baseState, Operator oper);
 
         public string Road()
         {
