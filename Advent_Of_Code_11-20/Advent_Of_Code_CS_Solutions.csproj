@@ -53,6 +53,7 @@
     <Compile Include="Day17_Storage_Combinations.cs" />
     <Compile Include="Day18_Christmas_Lights_Animated.cs" />
     <Compile Include="Day19_Molecules.cs" />
+    <Compile Include="Day20_Houses.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="GraphSearchSolver.cs" />

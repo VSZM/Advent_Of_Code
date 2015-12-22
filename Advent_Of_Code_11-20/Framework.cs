@@ -15,7 +15,7 @@ namespace Advent_Of_Code_11_20
 
             Stopwatch sw = new Stopwatch();
 
-            ISolvable solvable = new Day19Molecules();
+            ISolvable solvable = new Day20Houses();
 
             sw.Start();
 			string part1_solution = solvable.Solve( lines, false);
