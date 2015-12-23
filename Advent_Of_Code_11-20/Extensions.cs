@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Advent_Of_Code_11_20
@@ -56,5 +58,28 @@ namespace Advent_Of_Code_11_20
             // Step 7
             return d[n, m];
         }
+
+        // FROM: http://stackoverflow.com/a/1898744/1564252
+        public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> elements, int k)
+        {
+            var enumerable = elements as T[] ?? elements.ToArray();
+            return k == 0 ? new[] { new T[0] } :
+              enumerable.SelectMany((e, i) =>
+                enumerable.Skip(i + 1).Combinations(k - 1).Select(c => (new[] { e }).Concat(c)));
+        }
+
+        // FROM: http://stackoverflow.com/questions/3093622/generating-all-possible-combinations/3098381#3098381
+        public static IEnumerable<IEnumerable<T>> CartesianProduct<T>(this IEnumerable<IEnumerable<T>> sequences)
+        {
+            IEnumerable<IEnumerable<T>> emptyProduct = new[] { Enumerable.Empty<T>() };
+            return sequences.Aggregate(
+                emptyProduct,
+                (accumulator, sequence) =>
+                    from accseq in accumulator
+                    from item in sequence
+                    select accseq.Concat(new[] { item })
+                );
+        }
+
     }
 }
