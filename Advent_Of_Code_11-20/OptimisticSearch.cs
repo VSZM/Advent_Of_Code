@@ -1,35 +1,35 @@
 ﻿namespace Advent_Of_Code_11_20
 {
-    internal class OptimisticSearch : HeuristicGraphSearchSolver 
+    internal class OptimisticSearch<TState> : HeuristicGraphSearchSolver<TState>
     {
-        public OptimisticSearch(Problem problem, IHeuristic heuristic)
+        public OptimisticSearch(Problem<TState> problem, IHeuristic<TState> heuristic)
             : base(problem, heuristic)
         {
         }
 
         public override bool Solve()
         {
-            State act_state = Problem.StartState;
+            Node<TState> act_node = Problem.StartNode;
 
-            while (act_state!= null && !Problem.Is_Goal_State(act_state))
+            while (act_node!= null && !Problem.Is_Goal_State(act_node))
             {
-                Operator oper = Select_Operator(act_state);
+                Operator<TState> oper = Select_Operator(act_node);
 
                 if (oper == null) // All operators have been tried out
                 {
-                    act_state = act_state.Parent;
+                    act_node = act_node.Parent;
                     continue;
                 }
 
-                act_state.OperatorsTried.Add(oper);
+                act_node.OperatorsTried.Add(oper);
                 
-                State new_state = oper.Apply(act_state);
-                act_state = new_state;
+                Node<TState> new_node = oper.Apply(act_node);
+                act_node = new_node;
             }
 
-            if (!Problem.Is_Goal_State(act_state)) return false;
+            if (!Problem.Is_Goal_State(act_node)) return false;
             
-            Solution = act_state;
+            Solution = act_node;
             return true;
         }
 

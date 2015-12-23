@@ -2,17 +2,17 @@
 
 namespace Advent_Of_Code_11_20
 {
-    internal abstract class Operator : IEquatable<Operator> 
+    internal abstract class Operator<State> : IEquatable<Operator<State>> 
     {
         public int Cost { get; }
 
-        public Operator(int cost)
+        protected Operator(int cost)
         {
             Cost = cost;
         }
 
-        public abstract bool Equals(Operator other);
+        public abstract bool Equals(Operator<State> other);
 
-        public abstract State Apply(State state);
+        public abstract Node<State> Apply(Node<State> node);
     }
 }

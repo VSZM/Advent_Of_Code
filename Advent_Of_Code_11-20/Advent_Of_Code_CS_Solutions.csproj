@@ -73,6 +73,7 @@
     <Compile Include="Day19_Molecules.cs" />
     <Compile Include="Day20_Houses.cs" />
     <Compile Include="Day21_RPG.cs" />
+    <Compile Include="Day22_MageRPG.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="GraphSearchSolver.cs" />
@@ -89,7 +90,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="State.cs" />
+    <Compile Include="Node.cs" />
+    <Compile Include="TreeSearchSolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

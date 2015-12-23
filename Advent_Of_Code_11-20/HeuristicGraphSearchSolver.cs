@@ -3,24 +3,24 @@ using System.Linq;
 
 namespace Advent_Of_Code_11_20
 {
-    internal abstract class HeuristicGraphSearchSolver : GraphSearchSolver 
+    internal abstract class HeuristicGraphSearchSolver<TState> : GraphSearchSolver<TState>
     {
-        protected IHeuristic Heuristic;
+        protected IHeuristic<TState> Heuristic;
 
-        protected HeuristicGraphSearchSolver(Problem problem, IHeuristic heuristic)
+        protected HeuristicGraphSearchSolver(Problem<TState> problem, IHeuristic<TState> heuristic)
             : base(problem)
         {
             Heuristic = heuristic;
         }
 
-        protected override Operator Select_Operator(State actState)// Selecting te best operator which leads to the best heuristic distance
+        protected override Operator<TState> Select_Operator(Node<TState> actNode)// Selecting te best operator which leads to the best heuristic distance
         {
-            List<Operator> avalible_operators =
-                Problem.Available_Operators(actState)
-                    .Where(oper => !(actState.OperatorsTried as IEnumerable<Operator>).Contains(oper))
+            List<Operator<TState>> avalible_operators =
+                Problem.Available_Operators(actNode)
+                    .Where(oper => !(actNode.OperatorsTried as IEnumerable<Operator<TState>>).Contains(oper))
                     .ToList();
 
-            return avalible_operators.Count == 0 ? null : avalible_operators.OrderBy(oper => Heuristic.Heuristic_Distance(oper.Apply(actState), Problem)).First();
+            return avalible_operators.Count == 0 ? null : avalible_operators.OrderBy(oper => Heuristic.Heuristic_Distance(oper.Apply(actNode), Problem)).First();
         }
     }
 }

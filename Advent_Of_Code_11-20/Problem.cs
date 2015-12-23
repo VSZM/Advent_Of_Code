@@ -2,16 +2,16 @@
 
 namespace Advent_Of_Code_11_20
 {
-    internal abstract class Problem
+    internal abstract class Problem<TState>
     {
-        public readonly State StartState;
+        public readonly Node<TState> StartNode;
 
-        protected Problem(State startState)
+        protected Problem(Node<TState> startNode)
         {
-            StartState = startState;
+            StartNode = startNode;
         }
 
-        public abstract List<Operator> Available_Operators(State state);
-        public abstract bool Is_Goal_State(State state);
+        public abstract List<Operator<TState>> Available_Operators(Node<TState> node);
+        public abstract bool Is_Goal_State(Node<TState> node);
     }
 }

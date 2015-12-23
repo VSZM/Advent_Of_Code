@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace Advent_Of_Code_11_20
 {
@@ -24,7 +25,7 @@ namespace Advent_Of_Code_11_20
 
             if (isPart2)
             {
-                GraphSearchSolver solver = new OptimisticSearch(new MoleculeProblem(new MoleculeState(base_formula, null, null, 0), "e",_transitions), new MoleculeHeuristic());
+                GraphSearchSolver<string> solver = new OptimisticSearch<string>(new MoleculeProblem(new Node<string>(base_formula, null, null, 0), "e",_transitions), new MoleculeHeuristic());
                 if (solver.Solve())
                     return solver.Solution.CostSoFar.ToString();
                 return "-1";
@@ -45,31 +46,30 @@ namespace Advent_Of_Code_11_20
         }
     }
 
-    internal class MoleculeProblem : Problem
+    internal class MoleculeProblem : Problem<string>
     {
         public string Goal { get; }
         private ISet<KeyValuePair<string, string>> _transitions;
 
 
-        public MoleculeProblem(State startState, string goal, ISet<KeyValuePair<string, string>> transitions) : base(startState)
+        public MoleculeProblem(Node<string> startNode, string goal, ISet<KeyValuePair<string, string>> transitions) : base(startNode)
         {
             Goal = goal;
             _transitions = transitions;
         }
 
-        public override List<Operator> Available_Operators(State state)
+        public override List<Operator<string>> Available_Operators(Node<string> node)
         {
-            List<Operator> ret = new List<Operator>();
+            List<Operator<string>> ret = new List<Operator<string>>();
 
-            MoleculeState ms = state as MoleculeState;
-            if (ms == null || ms.Molecule.Length < Goal.Length)
+            if (node.State.Length < Goal.Length)
                 return ret;
 
             foreach (var transition in _transitions)
             {
-                for (var pos = 0; pos < ms.Molecule.Length; pos++)
+                for (var pos = 0; pos < node.State.Length; pos++)
                 {
-                    var index = ms.Molecule.IndexOf(transition.Value, pos, StringComparison.CurrentCulture);
+                    var index = node.State.IndexOf(transition.Value, pos, StringComparison.CurrentCulture);
                     if (index == -1)
                         break;
                     ret.Add(new MoleculeOperator(transition.Value, transition.Key, index));
@@ -80,31 +80,23 @@ namespace Advent_Of_Code_11_20
             return ret;
         }
 
-        public override bool Is_Goal_State(State state)
+        public override bool Is_Goal_State(Node<string> node)
         {
-            MoleculeState ms = state as MoleculeState;
-            if (ms == null)
-                return false;
-
-            return Goal == ms.Molecule;
+            return Goal == node.State;
         }
     }
 
-    internal class MoleculeHeuristic : IHeuristic
+    internal class MoleculeHeuristic : IHeuristic<string>
     {
-        public int Heuristic_Distance(State state, Problem p)
+        public int Heuristic_Distance(Node<string> node, Problem<string> p)
         {
             MoleculeProblem mp = p as MoleculeProblem;
-            MoleculeState ms = state as MoleculeState;
 
-            if (ms == null || mp == null)
-                throw new ArgumentException();
-
-            return mp.Goal.Distance(ms.Molecule);
+            return mp.Goal.Distance(node.State);
         }
     }
 
-    internal class MoleculeOperator : Operator
+    internal class MoleculeOperator : Operator<string>
     {
         public string From { get; }
         public string To { get; }
@@ -141,7 +133,7 @@ namespace Advent_Of_Code_11_20
             }
         }
 
-        public override bool Equals(Operator other)
+        public override bool Equals(Operator<string> other)
         {
             var o = other as MoleculeOperator;
             if (o == null)
@@ -150,58 +142,9 @@ namespace Advent_Of_Code_11_20
             return o.From == From && o.To == To && o.Position == Position;
         }
 
-        public override State Apply(State state)
+        public override Node<string> Apply(Node<string> node)
         {
-            var base_state = state as MoleculeState;
-
-            if (base_state == null)
-                return null;
-
-            return new MoleculeState(base_state.Molecule.ReplaceAt(To, Position, From.Length), base_state, this, Cost + base_state.CostSoFar);
-        }
-    }
-
-    internal class MoleculeState : State
-    {
-        public string Molecule { get; }
-
-        public MoleculeState(string molecule, State parent, Operator parentOperator, int costSoFar)
-            : base(parent, parentOperator, costSoFar)
-        {
-            Molecule = molecule;
-        }
-
-        public override string ToString()
-        {
-            return Molecule;
-        }
-
-        protected bool Equals(MoleculeState other)
-        {
-            return string.Equals(Molecule, other.Molecule);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((MoleculeState)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return (Molecule != null ? Molecule.GetHashCode() : 0);
-        }
-
-        public override bool Equals(State other)
-        {
-            var o = other as MoleculeState;
-            if (o != null)
-            {
-                return o.Molecule == Molecule;
-            }
-            return false;
+            return new Node<string>(node.State.ReplaceAt(To, Position, From.Length), node, this, Cost + node.CostSoFar);
         }
     }
 }
