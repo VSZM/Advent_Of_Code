@@ -78,6 +78,7 @@
     <Compile Include="Framework.cs" />
     <Compile Include="GraphSearchSolver.cs" />
     <Compile Include="HeuristicGraphSearchSolver.cs" />
+    <Compile Include="IHaveABadFeelingAboutThisException.cs" />
     <Compile Include="IHeuristic.cs" />
     <Compile Include="ISolvable.cs" />
     <Compile Include="Operator.cs" />

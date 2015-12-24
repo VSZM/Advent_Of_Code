@@ -2,7 +2,7 @@
 
 namespace Advent_Of_Code_11_20
 {
-    internal abstract class Operator<State> : IEquatable<Operator<State>> 
+    internal abstract class Operator<TState> //: IEquatable<Operator<State>> 
     {
         public int Cost { get; }
 
@@ -11,8 +11,8 @@ namespace Advent_Of_Code_11_20
             Cost = cost;
         }
 
-        public abstract bool Equals(Operator<State> other);
+        //public abstract bool Equals(Operator<State> other);
 
-        public abstract Node<State> Apply(Node<State> node);
+        public abstract Node<TState> Apply(Node<TState> node);
     }
 }

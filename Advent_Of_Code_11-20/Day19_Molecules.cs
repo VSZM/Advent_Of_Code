@@ -133,14 +133,16 @@ namespace Advent_Of_Code_11_20
             }
         }
 
-        public override bool Equals(Operator<string> other)
-        {
-            var o = other as MoleculeOperator;
-            if (o == null)
-                return false;
+        //public override bool Equals(Operator<string> other)
+        //{
+        //    var o = other as MoleculeOperator;
+        //    if (o == null)
+        //        return false;
 
-            return o.From == From && o.To == To && o.Position == Position;
-        }
+        //    return false;
+
+        //    return o.From == From && o.To == To && o.Position == Position;
+        //}
 
         public override Node<string> Apply(Node<string> node)
         {
