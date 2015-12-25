@@ -88,7 +88,7 @@ namespace Advent_Of_Code_11_20
 
     internal class MoleculeHeuristic : IHeuristic<string>
     {
-        public int Heuristic_Distance(Node<string> node, Problem<string> p)
+        public float Heuristic_Distance(Node<string> node, Problem<string> p)
         {
             MoleculeProblem mp = p as MoleculeProblem;
 

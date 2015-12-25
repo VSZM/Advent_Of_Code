@@ -4,17 +4,26 @@ using System.Linq;
 
 namespace Advent_Of_Code_11_20
 {
-    delegate Unit ApplyEffectOnUnit(Unit unit);
+    internal delegate Unit ApplyEffectOnUnit(Unit unit);
 
-    abstract class Effect : IEquatable<Effect>
+    enum EffectEnum
     {
+        Shield,
+        Recharge,
+        Poison
+    }
+
+    internal abstract class Effect : IEquatable<Effect>, ICloneable
+    {
+        private readonly EffectEnum _effectType;
         protected readonly int Lasts;
         public readonly int DamageModifier;
         public readonly int ArmorModifier;
         protected readonly ApplyEffectOnUnit ApplyEffectMethod;
 
-        protected Effect(ApplyEffectOnUnit applyEffectMethod, int lasts, int armorModifier, int damageModifier)
+        protected Effect(EffectEnum effectType, ApplyEffectOnUnit applyEffectMethod, int lasts, int armorModifier, int damageModifier)
         {
+            _effectType = effectType;
             ApplyEffectMethod = applyEffectMethod;
             Lasts = lasts;
             ArmorModifier = armorModifier;
@@ -23,6 +32,7 @@ namespace Advent_Of_Code_11_20
 
         protected Effect(Effect copyOf)
         {
+            _effectType = copyOf._effectType;
             ApplyEffectMethod = copyOf.ApplyEffectMethod;
             ArmorModifier = copyOf.ArmorModifier;
             DamageModifier = copyOf.DamageModifier;
@@ -35,8 +45,10 @@ namespace Advent_Of_Code_11_20
                 unitOfOperation.Mana,
                 unitOfOperation.Items,
                 unitOfOperation.Effects.Select(
-                    effect => effect.ApplyWearOff()
-                    ).Where(effect => effect.Lasts > 0), unitOfOperation.CanAttack);
+                    effect => effect._effectType == _effectType ? effect.ApplyWearOff() : effect).
+                    Where(effect => effect.Lasts > 0),
+                unitOfOperation.CanAttack,
+                unitOfOperation.CanUseSpells);
 
 
             return ApplyEffectMethod(unit_with_effect_wore_off_applied);
@@ -46,7 +58,7 @@ namespace Advent_Of_Code_11_20
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Lasts == other.Lasts && GetType() == other.GetType();
+            return Lasts == other.Lasts && _effectType == other._effectType;
         }
 
         public override bool Equals(object obj)
@@ -62,10 +74,12 @@ namespace Advent_Of_Code_11_20
             return Lasts;
         }
 
+        public abstract object Clone();
+
         protected abstract Effect ApplyWearOff();
     }
 
-    class ShieldEffect : Effect
+    internal class ShieldEffect : Effect
     {
         public ShieldEffect()
             : this(unit => unit, 6, 7, 0)
@@ -78,8 +92,13 @@ namespace Advent_Of_Code_11_20
         }
 
         private ShieldEffect(ApplyEffectOnUnit applyEffectMethod, int lasts, int armorModifier, int damageModifier)
-            : base(applyEffectMethod, lasts, armorModifier, damageModifier)
+            : base(EffectEnum.Shield, applyEffectMethod, lasts, armorModifier, damageModifier)
         {
+        }
+
+        public override object Clone()
+        {
+            return new ShieldEffect(ApplyEffectMethod, Lasts, ArmorModifier, DamageModifier);
         }
 
         protected override Effect ApplyWearOff()
@@ -88,10 +107,10 @@ namespace Advent_Of_Code_11_20
         }
     }
 
-    class PoisonEffect : Effect
+    internal class PoisonEffect : Effect
     {
         public PoisonEffect()
-            : this(unit => new Unit(unit.Name, unit.HP - 3, unit.Mana, unit.Items, unit.Effects, unit.CanAttack),
+            : this(unit => new Unit(unit.Name, unit.HP - 3, unit.Mana, unit.Items, unit.Effects, unit.CanAttack, unit.CanUseSpells),
                 6,
                 0,
                 0)
@@ -103,8 +122,13 @@ namespace Advent_Of_Code_11_20
         {
         }
         private PoisonEffect(ApplyEffectOnUnit applyEffectMethod, int lasts, int armorModifier, int damageModifier)
-            : base(applyEffectMethod, lasts, armorModifier, damageModifier)
+            : base(EffectEnum.Poison, applyEffectMethod, lasts, armorModifier, damageModifier)
         {
+        }
+
+        public override object Clone()
+        {
+            return new PoisonEffect(ApplyEffectMethod, Lasts, ArmorModifier, DamageModifier);
         }
 
         protected override Effect ApplyWearOff()
@@ -113,15 +137,19 @@ namespace Advent_Of_Code_11_20
         }
     }
 
-    class RechargeEffect : Effect
+    internal class RechargeEffect : Effect
     {
         public RechargeEffect()
-            : this(unit => new Unit(unit.Name, unit.HP, unit.Mana + 101, unit.Items, unit.Effects, unit.CanAttack), 5, 0, 0)
+            : this(
+                  unit
+                  =>
+                  new Unit(unit.Name, unit.HP, unit.Mana + 101, unit.Items, unit.Effects, unit.CanAttack, unit.CanUseSpells)
+                  , 5, 0, 0)
         {
         }
 
         private RechargeEffect(ApplyEffectOnUnit applyEffectMethod, int lasts, int armorModifier, int damageModifier)
-            : base(applyEffectMethod, lasts, armorModifier, damageModifier)
+            : base(EffectEnum.Recharge, applyEffectMethod, lasts, armorModifier, damageModifier)
         {
         }
 
@@ -130,13 +158,27 @@ namespace Advent_Of_Code_11_20
         {
         }
 
+        public override object Clone()
+        {
+            return new RechargeEffect(ApplyEffectMethod, Lasts, ArmorModifier, DamageModifier);
+        }
+
         protected override Effect ApplyWearOff()
         {
             return new RechargeEffect(ApplyEffectMethod, Lasts - 1, ArmorModifier, DamageModifier);
         }
     }
 
-    class RpgFightState : IEquatable<RpgFightState>
+    internal class RpgHeuristic : IHeuristic<RpgFightState>
+    {
+        public float Heuristic_Distance(Node<RpgFightState> node, Problem<RpgFightState> p)
+        {
+            return ((float)p.StartNode.State.Player.Mana / node.State.Player.Mana + (float)p.StartNode.State.Player.HP / node.State.Player.HP - (float)p.StartNode.State.Npc.HP / node.State.Npc.HP) 
+                / (node.State.Npc.Effects.Count + node.State.Player.Effects.Count) * node.State.Npc.HP;
+        }
+    }
+
+    internal class RpgFightState : IEquatable<RpgFightState>
     {
         public readonly Unit Player;
         public readonly Unit Npc;
@@ -153,8 +195,9 @@ namespace Advent_Of_Code_11_20
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return IsPlayerTurn == other.IsPlayerTurn && Player.HP == other.Player.HP && Player.Mana == other.Player.Mana && Player.Effects.Equals(other.Player.Effects) &&
-                Npc.HP == other.Npc.HP && Npc.Effects.Equals(other.Npc.Effects);
+            return IsPlayerTurn == other.IsPlayerTurn && Player.HP == other.Player.HP && Player.Mana == other.Player.Mana && Npc.HP == other.Npc.HP
+                && Player.Effects.Equals(other.Player.Effects) && Npc.Effects.Equals(other.Npc.Effects)
+                ;
         }
 
         public override bool Equals(object obj)
@@ -174,39 +217,13 @@ namespace Advent_Of_Code_11_20
                 hash_code = (hash_code * 397) ^ IsPlayerTurn.GetHashCode();
                 hash_code = (hash_code * 397) ^ Npc.HP;
                 hash_code = (hash_code * 397) ^ Player.HP;
+                hash_code = (hash_code * 397) ^ Player.Mana;
                 return hash_code;
             }
         }
     }
 
-    //class RpgBaseOperator : Operator<RpgFightState>
-    //{
-    //    public RpgBaseOperator(int cost) : base(cost)
-    //    {
-    //    }
-
-    //    public override Node<RpgFightState> Apply(Node<RpgFightState> node)
-    //    {
-    //        Unit player_new = node.State.Player;
-    //        Unit npc_new = node.State.Npc;
-
-    //        foreach (Effect effect in node.State.Player.Effects)
-    //        {
-    //            player_new = effect.Apply();
-    //        }
-
-    //        foreach (Effect effect in node.State.Npc.Effects)
-    //        {
-    //            npc_new = effect.Apply();
-    //        }
-
-    //        RpgFightState new_state = new RpgFightState(player_new, npc_new, !node.State.IsPlayerTurn);
-
-    //        return new Node<RpgFightState>(new_state, node, this, node.CostSoFar + );
-    //    }
-    //}
-
-    class Attack : Operator<RpgFightState>
+    internal class Attack : Operator<RpgFightState>
     {
         public Attack()
             : base(0)
@@ -215,72 +232,78 @@ namespace Advent_Of_Code_11_20
 
         public override Node<RpgFightState> Apply(Node<RpgFightState> node)
         {
-            Unit player_new = new Unit(node.State.Player);
-            Unit npc_new = new Unit(node.State.Npc);
+            var player_new = new Unit(node.State.Player);
+            var npc_new = new Unit(node.State.Npc);
 
-            player_new = node.State.Player.Effects.Aggregate(player_new, (current, effect) => effect.Apply(current));
-            npc_new = node.State.Npc.Effects.Aggregate(npc_new, (current, effect) => effect.Apply(current));
+            player_new = player_new.Effects.Aggregate(player_new, (current, effect) => effect.Apply(current));
+            npc_new = npc_new.Effects.Aggregate(npc_new, (current, effect) => effect.Apply(current));
 
-            player_new = player_new.Get_Attacked_By(npc_new);
+            if (npc_new.HP > 0)
+                player_new = player_new.Get_Attacked_By(npc_new);
 
 
-            RpgFightState new_state = new RpgFightState(player_new, npc_new, !node.State.IsPlayerTurn);
+            var new_state = new RpgFightState(player_new, npc_new, !node.State.IsPlayerTurn);
 
             return new Node<RpgFightState>(new_state, node, this, node.CostSoFar + Cost);
         }
     }
 
-    class MagicMissile : Operator<RpgFightState>
+    internal class MagicMissile : Operator<RpgFightState>
     {
+        public const int ManaCost = 53;
+
         public MagicMissile()
-            : base(53)
+            : base(ManaCost)
         {
         }
 
         public override Node<RpgFightState> Apply(Node<RpgFightState> node)
         {
-            Unit player_new = new Unit(node.State.Player);
-            Unit npc_new = new Unit(node.State.Npc);
+            var player_new = new Unit(node.State.Player);
+            var npc_new = new Unit(node.State.Npc);
 
-            // TODO TRY WITH CALLING IT ON THE COPY
-            player_new = node.State.Player.Effects.Aggregate(player_new, (current, effect) => effect.Apply(current));
-            npc_new = node.State.Npc.Effects.Aggregate(npc_new, (current, effect) => effect.Apply(current));
+            player_new = player_new.Effects.Aggregate(player_new, (current, effect) => effect.Apply(current));
+            npc_new = npc_new.Effects.Aggregate(npc_new, (current, effect) => effect.Apply(current));
 
             player_new = new Unit(player_new.Name, player_new.HP, player_new.Mana - Cost, player_new.Items, player_new.Effects, false, true);
             npc_new = new Unit(npc_new.Name, npc_new.HP - 4, npc_new.Mana, npc_new.Items, npc_new.Effects);
 
-            RpgFightState new_state = new RpgFightState(player_new, npc_new, !node.State.IsPlayerTurn);
+            var new_state = new RpgFightState(player_new, npc_new, !node.State.IsPlayerTurn);
 
             return new Node<RpgFightState>(new_state, node, this, node.CostSoFar + Cost);
         }
     }
 
-    class Drain : Operator<RpgFightState>
+    internal class Drain : Operator<RpgFightState>
     {
+        public const int ManaCost = 73;
+
         public Drain()
-            : base(73)
+            : base(ManaCost)
         {
         }
 
         public override Node<RpgFightState> Apply(Node<RpgFightState> node)
         {
-            Unit player_new = new Unit(node.State.Player);
-            Unit npc_new = new Unit(node.State.Npc);
+            var player_new = new Unit(node.State.Player);
+            var npc_new = new Unit(node.State.Npc);
 
-            player_new = node.State.Player.Effects.Aggregate(player_new, (current, effect) => effect.Apply(current));
-            npc_new = node.State.Npc.Effects.Aggregate(npc_new, (current, effect) => effect.Apply(current));
+            player_new = player_new.Effects.Aggregate(player_new, (current, effect) => effect.Apply(current));
+            npc_new = npc_new.Effects.Aggregate(npc_new, (current, effect) => effect.Apply(current));
 
             player_new = new Unit(player_new.Name, player_new.HP + 2, player_new.Mana - Cost, player_new.Items, player_new.Effects, false, true);
             npc_new = new Unit(npc_new.Name, npc_new.HP - 2, npc_new.Mana, npc_new.Items, npc_new.Effects);
 
-            RpgFightState new_state = new RpgFightState(player_new, npc_new, !node.State.IsPlayerTurn);
+            var new_state = new RpgFightState(player_new, npc_new, !node.State.IsPlayerTurn);
 
             return new Node<RpgFightState>(new_state, node, this, node.CostSoFar + Cost);
         }
     }
 
-    class Shield : Operator<RpgFightState>
+    internal class Shield : Operator<RpgFightState>
     {
+        public const int ManaCost = 113;
+
         public Shield()
             : base(113)
         {
@@ -288,41 +311,43 @@ namespace Advent_Of_Code_11_20
 
         public override Node<RpgFightState> Apply(Node<RpgFightState> node)
         {
-            Unit player_new = new Unit(node.State.Player);
-            Unit npc_new = new Unit(node.State.Npc);
+            var player_new = new Unit(node.State.Player);
+            var npc_new = new Unit(node.State.Npc);
 
-            player_new = node.State.Player.Effects.Aggregate(player_new, (current, effect) => effect.Apply(current));
-            npc_new = node.State.Npc.Effects.Aggregate(npc_new, (current, effect) => effect.Apply(current));
+            player_new = player_new.Effects.Aggregate(player_new, (current, effect) => effect.Apply(current));
+            npc_new = npc_new.Effects.Aggregate(npc_new, (current, effect) => effect.Apply(current));
 
-            List<Effect> new_player_effects = new List<Effect>(player_new.Effects)
+            var new_player_effects = new List<Effect>(player_new.Effects)
             {
                 new ShieldEffect()
             };
 
             player_new = new Unit(player_new.Name, player_new.HP, player_new.Mana - Cost, player_new.Items, new_player_effects, false, true);
 
-            RpgFightState new_state = new RpgFightState(player_new, npc_new, !node.State.IsPlayerTurn);
+            var new_state = new RpgFightState(player_new, npc_new, !node.State.IsPlayerTurn);
 
             return new Node<RpgFightState>(new_state, node, this, node.CostSoFar + Cost);
         }
     }
 
-    class Poison : Operator<RpgFightState>
+    internal class Poison : Operator<RpgFightState>
     {
+        public const int ManaCost = 173;
+
         public Poison()
-            : base(173)
+            : base(ManaCost)
         {
         }
 
         public override Node<RpgFightState> Apply(Node<RpgFightState> node)
         {
-            Unit player_new = new Unit(node.State.Player);
-            Unit npc_new = new Unit(node.State.Npc);
+            var player_new = new Unit(node.State.Player);
+            var npc_new = new Unit(node.State.Npc);
 
-            player_new = node.State.Player.Effects.Aggregate(player_new, (current, effect) => effect.Apply(current));
-            npc_new = node.State.Npc.Effects.Aggregate(npc_new, (current, effect) => effect.Apply(current));
+            player_new = player_new.Effects.Aggregate(player_new, (current, effect) => effect.Apply(current));
+            npc_new = npc_new.Effects.Aggregate(npc_new, (current, effect) => effect.Apply(current));
 
-            List<Effect> boss_effects = new List<Effect>(npc_new.Effects)
+            var boss_effects = new List<Effect>(npc_new.Effects)
             {
                 new PoisonEffect()
             };
@@ -331,42 +356,56 @@ namespace Advent_Of_Code_11_20
             npc_new = new Unit(npc_new.Name, npc_new.HP, npc_new.Mana, npc_new.Items, boss_effects);
 
 
-            RpgFightState new_state = new RpgFightState(player_new, npc_new, !node.State.IsPlayerTurn);
+            var new_state = new RpgFightState(player_new, npc_new, !node.State.IsPlayerTurn);
 
             return new Node<RpgFightState>(new_state, node, this, node.CostSoFar + Cost);
         }
     }
 
-    class Recharge : Operator<RpgFightState>
+    internal class Recharge : Operator<RpgFightState>
     {
+        public const int ManaCost = 229;
+
         public Recharge()
-            : base(229)
+            : base(ManaCost)
         {
         }
 
         public override Node<RpgFightState> Apply(Node<RpgFightState> node)
         {
-            Unit player_new = new Unit(node.State.Player);
-            Unit npc_new = new Unit(node.State.Npc);
+            var player_new = new Unit(node.State.Player);
+            var npc_new = new Unit(node.State.Npc);
 
-            player_new = node.State.Player.Effects.Aggregate(player_new, (current, effect) => effect.Apply(current));
-            npc_new = node.State.Npc.Effects.Aggregate(npc_new, (current, effect) => effect.Apply(current));
+            player_new = player_new.Effects.Aggregate(player_new, (current, effect) => effect.Apply(current));
+            npc_new = npc_new.Effects.Aggregate(npc_new, (current, effect) => effect.Apply(current));
 
-            List<Effect> new_player_effects = new List<Effect>(player_new.Effects)
+            var new_player_effects = new List<Effect>(player_new.Effects)
             {
                 new RechargeEffect()
             };
 
             player_new = new Unit(player_new.Name, player_new.HP, player_new.Mana - Cost, player_new.Items, new_player_effects, false, true);
 
-            RpgFightState new_state = new RpgFightState(player_new, npc_new, !node.State.IsPlayerTurn);
+            var new_state = new RpgFightState(player_new, npc_new, !node.State.IsPlayerTurn);
 
             return new Node<RpgFightState>(new_state, node, this, node.CostSoFar + Cost);
         }
     }
 
-    class RpgProblem : Problem<RpgFightState>
+    internal class RpgProblem : Problem<RpgFightState>
     {
+        private static Queue<Operator<RpgFightState>> _playerOperators;
+
+        static RpgProblem()
+        {
+            _playerOperators = new Queue<Operator<RpgFightState>>();
+            _playerOperators.Enqueue(new Recharge());
+            _playerOperators.Enqueue(new Shield());
+            _playerOperators.Enqueue(new Drain());
+            _playerOperators.Enqueue(new Poison());
+            _playerOperators.Enqueue(new MagicMissile());
+            _playerOperators.Enqueue(new MagicMissile());
+        }
         public RpgProblem(Node<RpgFightState> startNode)
             : base(startNode)
         {
@@ -376,13 +415,22 @@ namespace Advent_Of_Code_11_20
         {
             if (node.State.IsPlayerTurn)
             {
-                var ret = new List<Operator<RpgFightState>> {new Drain(), new MagicMissile()};
+                //  return new List<Operator<RpgFightState>> { player_operators.Dequeue() };
+                var ret = new List<Operator<RpgFightState>>();
 
-                if (!node.State.Player.Effects.Select(effect => effect.GetType() == typeof(Recharge)).Contains(true))
+                if (node.State.Player.HP <= 0)
+                    return ret;
+
+                if (Drain.ManaCost < node.State.Player.Mana)
+                    ret.Add(new Drain());
+                if (MagicMissile.ManaCost < node.State.Player.Mana)
+                    ret.Add(new MagicMissile());
+
+                if (!node.State.Player.Effects.Select(effect => effect.GetType() == typeof(Recharge)).Contains(true) && Recharge.ManaCost < node.State.Player.Mana)
                     ret.Add(new Recharge());
-                if (!node.State.Player.Effects.Select(effect => effect.GetType() == typeof(Shield)).Contains(true))
+                if (!node.State.Player.Effects.Select(effect => effect.GetType() == typeof(Shield)).Contains(true) && Shield.ManaCost < node.State.Player.Mana)
                     ret.Add(new Shield());
-                if (!node.State.Npc.Effects.Select(effect => effect.GetType() == typeof(Recharge)).Contains(true))
+                if (!node.State.Npc.Effects.Select(effect => effect.GetType() == typeof(Poison)).Contains(true) && Poison.ManaCost < node.State.Player.Mana)
                     ret.Add(new Poison());
 
                 return ret;
@@ -396,16 +444,16 @@ namespace Advent_Of_Code_11_20
         }
     }
 
-    class Day22MageRpg : ISolvable
+    internal class Day22MageRpg : ISolvable
     {
 
 
         public string Solve(string[] inputLines, bool isPart2)
         {
-            Unit boss = new Unit("boss", int.Parse(inputLines[0].Split().Last()), 0, new[] { new Item("boss_weapon", 0, int.Parse(inputLines[1].Split().Last()), 0) }, null);
-            Unit player = new Unit("player", 10, 250, null, null, false, true);
+            var boss = new Unit("boss", int.Parse(inputLines[0].Split().Last()), 0, new[] { new Item("boss_weapon", 0, int.Parse(inputLines[1].Split().Last()), 0) }, null);
+            var player = new Unit("player", 10, 250, null, null, false, true);
 
-            var solver = new OptimalTreeSearchSolver<RpgFightState>(new RpgProblem(new Node<RpgFightState>(new RpgFightState(player, boss, true), null, null, 0)));
+            var solver = new ASearch<RpgFightState>(new RpgProblem(new Node<RpgFightState>(new RpgFightState(player, boss, true), null, null, 0)), new RpgHeuristic());
             if (!solver.Solve())
                 throw new IHaveABadFeelingAboutThisException("There should definitely be a solution");
 

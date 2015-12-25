@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace Advent_Of_Code_11_20
 {
@@ -33,7 +32,7 @@ namespace Advent_Of_Code_11_20
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((Item) obj);
+            return Equals((Item)obj);
         }
 
         public override int GetHashCode()
@@ -41,9 +40,9 @@ namespace Advent_Of_Code_11_20
             unchecked
             {
                 var hashCode = Name.GetHashCode();
-                hashCode = (hashCode*397) ^ Cost;
-                hashCode = (hashCode*397) ^ Damage;
-                hashCode = (hashCode*397) ^ Armor;
+                hashCode = (hashCode * 397) ^ Cost;
+                hashCode = (hashCode * 397) ^ Damage;
+                hashCode = (hashCode * 397) ^ Armor;
                 return hashCode;
             }
         }
@@ -59,7 +58,7 @@ namespace Advent_Of_Code_11_20
             get { return new HashSet<Effect>(_effects).ToList().AsReadOnly(); }
         }
 
-        private readonly HashSet<Effect> _effects; 
+        private readonly HashSet<Effect> _effects;
         private readonly List<Item> _items;
         public int Mana { get; }
         public int HP { get; }
@@ -68,7 +67,7 @@ namespace Advent_Of_Code_11_20
 
         public int Armor
         {
-            get { return _items.Select(item => item.Armor).Sum() + _effects.Select(effect => effect.ArmorModifier).Sum() ; }
+            get { return _items.Select(item => item.Armor).Sum() + _effects.Select(effect => effect.ArmorModifier).Sum(); }
         }
         public int Damage
         {
@@ -86,17 +85,18 @@ namespace Advent_Of_Code_11_20
             HP = hp;
             Mana = mana;
             _items = new List<Item>();
-            if(gear != null)
+            if (gear != null)
                 foreach (var item in gear)
                 {
                     _items.Add(item);
                 }
-            _effects = new HashSet<Effect>();
-            if(effects != null)
-                foreach (var effect in effects)
-                {
-                    _effects.Add(effect);
-                }
+            if (effects != null)
+                _effects = new HashSet<Effect>
+                (
+                    effects.Select(effect => (Effect)effect.Clone())
+                );
+            else
+                _effects = new HashSet<Effect>();
 
             CanAttack = canAttack;
             CanUseSpells = canUseSpells;
@@ -106,20 +106,25 @@ namespace Advent_Of_Code_11_20
         {
             Name = player.Name;
             HP = player.HP;
+            Mana = player.Mana;
             _items = new List<Item>(player._items);
-            _effects = new HashSet<Effect>(player._effects);
+            _effects = new HashSet<Effect>
+            (
+                player._effects.Select(effect => (Effect)effect.Clone())
+            );
+
             CanAttack = player.CanAttack;
             CanUseSpells = player.CanUseSpells;
         }
 
         public Unit Get_Attacked_By(Unit attacker)
         {
-            return !attacker.CanAttack ? this : new Unit(Name, HP - (attacker.Damage - Armor > 0 ? attacker.Damage - Armor : 1), Mana, _items, attacker._effects);
+            return !attacker.CanAttack ? this : new Unit(Name, HP - (attacker.Damage - Armor > 0 ? attacker.Damage - Armor : 1), Mana, _items, _effects);
         }
 
         public Unit Add_Effect(Effect effect)
         {
-            HashSet<Effect> new_effects = new HashSet<Effect>(Effects) {effect};
+            HashSet<Effect> new_effects = new HashSet<Effect>(Effects) { effect };
             return new Unit(Name, HP, Mana, _items, new_effects, CanAttack);
         }
 
@@ -155,7 +160,7 @@ namespace Advent_Of_Code_11_20
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((Unit) obj);
+            return Equals((Unit)obj);
         }
 
         public override int GetHashCode()
@@ -245,7 +250,7 @@ Defense +3   80     0       3";
                                     0,
                                     int.Parse(inputLines[1].Split().Last()),
                                     int.Parse(inputLines[2].Split().Last()))
-                            },null);
+                            }, null);
 
 
                 Unit player = new Unit("player", 100, 0, items.SelectMany(list => list), null);
