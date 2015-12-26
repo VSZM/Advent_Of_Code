@@ -75,6 +75,7 @@
     <Compile Include="Day21_RPG.cs" />
     <Compile Include="Day22_MageRPG.cs" />
     <Compile Include="Day23_Interpreter.cs" />
+    <Compile Include="Day25_Sequence.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="GraphSearchSolver.cs" />

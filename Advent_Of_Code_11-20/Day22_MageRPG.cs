@@ -394,17 +394,17 @@ namespace Advent_Of_Code_11_20
 
     internal class RpgProblem : Problem<RpgFightState>
     {
-        private static Queue<Operator<RpgFightState>> _playerOperators;
+        private static readonly Queue<Operator<RpgFightState>> PlayerOperators;
 
         static RpgProblem()
         {
-            _playerOperators = new Queue<Operator<RpgFightState>>();
-            _playerOperators.Enqueue(new Recharge());
-            _playerOperators.Enqueue(new Shield());
-            _playerOperators.Enqueue(new Drain());
-            _playerOperators.Enqueue(new Poison());
-            _playerOperators.Enqueue(new MagicMissile());
-            _playerOperators.Enqueue(new MagicMissile());
+            PlayerOperators = new Queue<Operator<RpgFightState>>();
+            PlayerOperators.Enqueue(new Recharge());
+            PlayerOperators.Enqueue(new Shield());
+            PlayerOperators.Enqueue(new Drain());
+            PlayerOperators.Enqueue(new Poison());
+            PlayerOperators.Enqueue(new MagicMissile());
+            PlayerOperators.Enqueue(new MagicMissile());
         }
         public RpgProblem(Node<RpgFightState> startNode)
             : base(startNode)
@@ -453,7 +453,7 @@ namespace Advent_Of_Code_11_20
             var boss = new Unit("boss", int.Parse(inputLines[0].Split().Last()), 0, new[] { new Item("boss_weapon", 0, int.Parse(inputLines[1].Split().Last()), 0) }, null);
             var player = new Unit("player", 10, 250, null, null, false, true);
 
-            var solver = new ASearch<RpgFightState>(new RpgProblem(new Node<RpgFightState>(new RpgFightState(player, boss, true), null, null, 0)), new RpgHeuristic());
+            var solver = new OptimisticSearch<RpgFightState>(new RpgProblem(new Node<RpgFightState>(new RpgFightState(player, boss, true), null, null, 0)), new RpgHeuristic());
             if (!solver.Solve())
                 throw new IHaveABadFeelingAboutThisException("There should definitely be a solution");
 
