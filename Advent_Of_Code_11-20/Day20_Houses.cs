@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Advent_Of_Code_11_20
+﻿namespace Advent_Of_Code_11_20
 {
     class Day20Houses : ISolvable
     {

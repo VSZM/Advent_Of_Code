@@ -1,9 +1,10 @@
 ﻿
+using System;
 using System.Collections.Generic;
 
 namespace Advent_Of_Code_11_20
 {
-    abstract class TreeSearchSolver<TState>
+    abstract class TreeSearchSolver<TState> where TState : IComparable<TState>
     {
         public Node<TState> Solution { get; private set; }
         protected Problem<TState> Problem;
@@ -18,10 +19,17 @@ namespace Advent_Of_Code_11_20
             var open_nodes = new List<Node<TState>>() { Problem.StartNode };
             var closed_nodes = new List<Node<TState>>();
             Node<TState> act_node = null;
+            long highest_cost_so_far = int.MinValue;
 
             while (open_nodes.Count > 0)
             {
                 act_node = Select_Node(open_nodes);
+
+                if (act_node.CostSoFar > highest_cost_so_far)
+                {
+                    Console.WriteLine("{0} Reached cost class: {1}", DateTime.Now, act_node.CostSoFar);
+                    highest_cost_so_far = act_node.CostSoFar;
+                }
 
                 if (Problem.Is_Goal_State(act_node))
                     break;
@@ -41,7 +49,7 @@ namespace Advent_Of_Code_11_20
         protected abstract Node<TState> Select_Node(List<Node<TState>> openNodes);
     }
 
-    class ASearch<TState> : TreeSearchSolver<TState>
+    class ASearch<TState> : TreeSearchSolver<TState> where TState : IComparable<TState>
     {
         private IHeuristic<TState> _heuristic; 
         public ASearch(Problem<TState> problem, IHeuristic<TState> heuristic)
@@ -92,7 +100,7 @@ namespace Advent_Of_Code_11_20
         }
     }
 
-    class OptimalTreeSearchSolver<TState> : TreeSearchSolver<TState>
+    class OptimalTreeSearchSolver<TState> : TreeSearchSolver<TState> where TState : IComparable<TState>
     {
         public OptimalTreeSearchSolver(Problem<TState> problem)
             : base(problem)
@@ -129,7 +137,7 @@ namespace Advent_Of_Code_11_20
 
             for (int i = 1; i < openNodes.Count; i++)
             {
-                if (openNodes[i].CostSoFar < openNodes[min_idx].CostSoFar)
+                if (openNodes[min_idx].State.CompareTo(openNodes[i].State) > 0)
                     min_idx = i;
             }
 

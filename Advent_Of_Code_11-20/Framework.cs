@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Media;
 using System.Windows.Forms;
 
 namespace Advent_Of_Code_11_20
@@ -15,7 +16,7 @@ namespace Advent_Of_Code_11_20
 
             Stopwatch sw = new Stopwatch();
 
-            ISolvable solvable = new Day22MageRpg();
+            ISolvable solvable = new Day24SantaRide();
 
             sw.Start();
 			string part1_solution = solvable.Solve( lines, false);
@@ -24,7 +25,7 @@ namespace Advent_Of_Code_11_20
             Console.WriteLine("Part 1 solution = '{0}'", part1_solution);
             Clipboard.SetText(part1_solution);
             Console.WriteLine("Part 1 solved in {0} ms. Clipboard contains the solution", sw.ElapsedMilliseconds);
-
+            SystemSounds.Beep.Play();
 
             Console.WriteLine("Press any key to start part 2");
             Console.ReadKey();
@@ -39,6 +40,7 @@ namespace Advent_Of_Code_11_20
             Console.WriteLine("Part 2 solution = '{0}'", part2_solution);
             Clipboard.SetText(part2_solution);
             Console.WriteLine("Part 2 solved in {0} ms. Clipboard contains the solution", sw.ElapsedMilliseconds);
+            SystemSounds.Beep.Play();
         }
     }
 }

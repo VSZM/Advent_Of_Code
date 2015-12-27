@@ -8,10 +8,10 @@ namespace Advent_Of_Code_11_20
         public TState State { get; set; }
         public Node<TState> Parent { get; set; }
         public Operator<TState> ParentOperator { get; set; }
-        public int CostSoFar { get; set; }
+        public long CostSoFar { get; set; }
         public HashSet<Operator<TState>> OperatorsTried { get; set; }
 
-        public Node(TState state, Node<TState> parent, Operator<TState> parentOperator, int costSoFar)
+        public Node(TState state, Node<TState> parent, Operator<TState> parentOperator, long costSoFar)
         {
             State = state;
             OperatorsTried = new HashSet<Operator<TState>>();

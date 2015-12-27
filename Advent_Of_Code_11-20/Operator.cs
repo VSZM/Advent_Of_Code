@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Advent_Of_Code_11_20
+﻿namespace Advent_Of_Code_11_20
 {
     internal abstract class Operator<TState> //: IEquatable<Operator<State>> 
     {
