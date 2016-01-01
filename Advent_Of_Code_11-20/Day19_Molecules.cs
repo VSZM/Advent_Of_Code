@@ -24,7 +24,7 @@ namespace Advent_Of_Code_11_20
 
             if (isPart2)
             {
-                GraphSearchSolver<string> solver = new OptimisticSearch<string>(new MoleculeProblem(new Node<string>(base_formula, null, null, 0), "e",_transitions), new MoleculeHeuristic());
+                GraphSearchSolver<string> solver = new HeuristicGraphSearchSolver<string>(new MoleculeProblem(new Node<string>(base_formula, null, null, 0), "e",_transitions), new MoleculeHeuristic());
                 if (solver.Solve())
                     return solver.Solution.CostSoFar.ToString();
                 return "-1";

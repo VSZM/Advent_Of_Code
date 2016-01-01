@@ -7,8 +7,8 @@
     <ProjectGuid>{464AE24A-DE3F-4075-812D-5D6C1C2DBDAC}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Advent_Of_Code_11_20</RootNamespace>
-    <AssemblyName>Advent_Of_Code_11-20</AssemblyName>
+    <RootNamespace>Advent_Of_Code_CS_Solutions</RootNamespace>
+    <AssemblyName>Advent_Of_Code_CS_Solutions</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -31,10 +31,10 @@
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -82,12 +82,10 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="GraphSearchSolver.cs" />
-    <Compile Include="HeuristicGraphSearchSolver.cs" />
     <Compile Include="IHaveABadFeelingAboutThisException.cs" />
     <Compile Include="IHeuristic.cs" />
     <Compile Include="ISolvable.cs" />
     <Compile Include="Operator.cs" />
-    <Compile Include="OptimisticSearch.cs" />
     <Compile Include="Problem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Day14_Reindeer_race.cs" />
