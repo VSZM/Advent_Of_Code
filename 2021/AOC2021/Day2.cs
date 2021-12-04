@@ -10,7 +10,7 @@ namespace AOC2021
 
         public string[] Instructions { get; }
 
-        public string solve_part_1()
+        public object solve_part_1()
         {
             int depth = 0;
             int h = 0;
@@ -29,10 +29,10 @@ namespace AOC2021
                 }
             }
 
-            return (h * depth).ToString();
+            return h * depth;
         }
 
-        public string solve_part_2()
+        public object solve_part_2()
         {
             int depth = 0;
             int h = 0;
@@ -55,7 +55,7 @@ namespace AOC2021
                 }
             }
 
-            return (h * depth).ToString();
+            return h * depth;
         }
     }
 }

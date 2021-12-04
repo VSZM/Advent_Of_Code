@@ -3,8 +3,8 @@
     internal interface ISolvable
     {
 
-        string solve_part_1();
-        string solve_part_2();
+        object solve_part_1();
+        object solve_part_2();
 
     }
 }
