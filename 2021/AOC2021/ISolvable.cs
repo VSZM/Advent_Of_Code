@@ -3,8 +3,8 @@
     internal interface ISolvable
     {
 
-        object solve_part_1();
-        object solve_part_2();
+        object SolvePart1();
+        object SolvePart2();
 
     }
 }

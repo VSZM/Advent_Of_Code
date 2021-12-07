@@ -81,7 +81,7 @@ namespace AOC2021
             return sum;
         }
 
-        public object solve_part_1()
+        public object SolvePart1()
         {
             foreach (var number in Numbers)
             {
@@ -97,7 +97,7 @@ namespace AOC2021
             return -1;
         }
 
-        public object solve_part_2()
+        public object SolvePart2()
         {
             int result = -1;
             foreach (var number in Numbers)

@@ -10,7 +10,7 @@ namespace AOC2021
 
         public string[] Instructions { get; }
 
-        public object solve_part_1()
+        public object SolvePart1()
         {
             int depth = 0;
             int h = 0;
@@ -32,7 +32,7 @@ namespace AOC2021
             return h * depth;
         }
 
-        public object solve_part_2()
+        public object SolvePart2()
         {
             int depth = 0;
             int h = 0;

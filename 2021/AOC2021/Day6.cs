@@ -11,15 +11,13 @@ namespace AOC2021
         public Day6(string[] lines)
         {
             Fishes = lines[0].Split(',').Select(str => int.Parse(str));
-            for(int i = 0; i < 100; ++i)
-            {
-                Console.WriteLine(string.Format("Fishies Count after {0} Days: {1}", i, Breed_Fish_For_X_Days(0, i)));
-            }
+            BreedingLookup = new Dictionary<Tuple<int, int>, BigInteger>();
         }
 
         public IEnumerable<int> Fishes { get; private set; }
+        public Dictionary<Tuple<int, int>, BigInteger> BreedingLookup { get; }
 
-        private int Breed_Fish_For_X_Days(int start_age, int x)
+        private int Breed_Fish_For_X_Days_Simulated(int start_age, int x)
         {
             List<int> fishies = new List<int> { start_age };
             for (int day = 0; day < x; day++)
@@ -38,19 +36,36 @@ namespace AOC2021
             return fishies.Count();
         }
 
-        public object solve_part_1()
+        private BigInteger Breed_Fish_For_X_Days_Recursive(int till_birth, int days)
         {
-            var breeding_lookup = Enumerable.Range(0, 7).ToDictionary(start => start, start => Breed_Fish_For_X_Days(start, 80));
-            return Fishes.Select(start => breeding_lookup[start]).Select(exp => new BigInteger(exp))
+            var lookup_key = Tuple.Create(till_birth, days);
+            if (BreedingLookup.ContainsKey(lookup_key))
+                return BreedingLookup[lookup_key];
+            BigInteger count = 1;
+            while (days > 0)
+            {
+                till_birth--;
+                if (till_birth == -1)
+                {
+                    till_birth = 6;
+                    count += Breed_Fish_For_X_Days_Recursive(8, days-1);
+                }
+                days--;
+            }
+            BreedingLookup[lookup_key] = count;
+            return count;
+        }
+
+        public object SolvePart1()
+        {
+            return Fishes.Select(till_birth => Breed_Fish_For_X_Days_Recursive(till_birth, 80))
                         .Aggregate(BigInteger.Add);
         }
 
-        public object solve_part_2()
+        public object SolvePart2()
         {
-            return 0;
-            var breeding_lookup = Enumerable.Range(0, 7).ToDictionary(start => start, start => Breed_Fish_For_X_Days(start, 256));
-            return Fishes.Select(start => breeding_lookup[start]).Select(exp => new BigInteger(exp))
-                        .Aggregate(BigInteger.Add);
+            return Fishes.Select(till_birth => Breed_Fish_For_X_Days_Recursive(till_birth, 256))
+                .Aggregate(BigInteger.Add);
         }
     }
 }

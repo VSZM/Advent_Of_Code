@@ -17,7 +17,7 @@ namespace AOC2021
         public string[] Lines { get; }
         public List<int> Numbers { get; }
 
-        public object solve_part_1()
+        public object SolvePart1()
         {
             var previous = Numbers[0];
             var increment_counter = 0;
@@ -32,7 +32,7 @@ namespace AOC2021
             return increment_counter;
         }
 
-        public object solve_part_2()
+        public object SolvePart2()
         {
             var increment_counter = 0;
             for (int i = 3; i < Numbers.Count; i++)

@@ -15,7 +15,7 @@ namespace AOC2021
 
         public string[] Lines { get; }
 
-        public object solve_part_1()
+        public object SolvePart1()
         {
             string gamma = "";
             string epsilon = "";
@@ -36,7 +36,7 @@ namespace AOC2021
             return Convert.ToInt32(gamma, 2) * Convert.ToInt32(epsilon, 2);
         }
 
-        public object solve_part_2()
+        public object SolvePart2()
         {
             var oxygen_candidates = new List<string>(Lines);
             int pos = 0;
