@@ -9,7 +9,7 @@ namespace AOC2021
         static void Main(string[] args)
         {
             var lines = File.ReadAllLines("input.txt");
-            var solver = new Day12(lines);
+            var solver = new Day13(lines);
             Console.WriteLine(string.Format("{0} Part 1 Solution: < {1} >", solver.GetType().Name, solver.SolvePart1()));
             Console.WriteLine(string.Format("{0} Part 2 Solution: < {1} >", solver.GetType().Name, solver.SolvePart2()));
         }
