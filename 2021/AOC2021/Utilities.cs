@@ -8,6 +8,7 @@ namespace AOC2021
 {
     using System;
     using System.Collections.Generic;
+    using System.Numerics;
 
     public static class Utilities
     {
@@ -40,6 +41,29 @@ namespace AOC2021
         public static string ToDebugString<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
         {
             return "{" + string.Join(",", dictionary.Select(kv => kv.Key + "=" + kv.Value).ToArray()) + "}";
+        }
+
+        public static IDictionary<char, int> Combine(this IDictionary<char, int> dictionary, IDictionary<char, int> other)
+        {
+            var ret = dictionary.Keys.ToDictionary(k => k, k => dictionary[k]);
+            foreach (var k in other.Keys)
+            {
+                ret[k] += other[k];
+            }
+
+            return ret;
+        }
+
+
+        public static Dictionary<char, BigInteger> Combine(this IDictionary<char, BigInteger> dictionary, IDictionary<char, BigInteger> other)
+        {
+            var ret = dictionary.Keys.ToDictionary(k => k, k => dictionary[k]);
+            foreach (var k in other.Keys)
+            {
+                ret[k] += other[k];
+            }
+
+            return ret;
         }
     }
 }

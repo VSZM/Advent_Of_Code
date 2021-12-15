@@ -1,6 +1,6 @@
 ﻿namespace AOC2021
 {
-    internal interface ISolvable
+    public interface ISolvable
     {
 
         object SolvePart1();

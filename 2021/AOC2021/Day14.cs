@@ -13,14 +13,14 @@ namespace AOC2021
             Template = lines[0];
             Rules = lines.Skip(2).Select(line => line.Split(" -> "))
                 .ToDictionary(pair => Tuple.Create(pair[0][0], pair[0][1]), pair => pair[1][0]);
-            Cache = new Dictionary<Tuple<string, BigInteger>, Dictionary<char, BigInteger>>();
+            Cache = new Dictionary<Tuple<char, char, int>, Dictionary<char, BigInteger>>();
         }
 
         public string Template { get; }
         public Dictionary<Tuple<char, char>, char> Rules { get; }
-        public Dictionary<Tuple<string, BigInteger>, Dictionary<char, BigInteger>> Cache { get; }
+        public Dictionary<Tuple<char, char, int>, Dictionary<char, BigInteger>> Cache { get; }
 
-        private Dictionary<char, BigInteger> GetElementDict()
+        private Dictionary<char, BigInteger> GetElementDict(params char[] args)
         {
             var ret = new Dictionary<char, BigInteger>();
             foreach (var c in Rules.Values)
@@ -30,55 +30,44 @@ namespace AOC2021
                     ret[c] = 0;
                 }
             }
+            foreach (var c in args)
+            {
+                ret[c]++;
+            }
+
             return ret;
         }
 
-        private Dictionary<char, BigInteger> GetElementCount(string template, BigInteger steps)
+        private Dictionary<char, BigInteger> GetElementCount(char left, char right, int steps)
         {
+            var key = Tuple.Create(left, right, steps);
+            if (Cache.ContainsKey(key))
+            {
+                return Cache[key];
+            }
             var counts = GetElementDict();
             if (steps == 0)
             {
-                foreach (var c in template)
-                {
-                    counts[c]++;
-                }
+                return counts;
             }
-            else
-            {
-                for (int i = 0; i < template.Length - 1; i++) // How to rewrite this loop to be more simple?
-                {
-                    Dictionary<char, BigInteger> count = null;
-                    var subtemplate = new string(new char[] { template[i], Rules[Tuple.Create(template[i], template[i + 1])], template[i + 1] });
-                    if (i > 0)
-                    {
-                        var cache_key = Tuple.Create(subtemplate, steps - 1);
-                        if (Cache.ContainsKey(cache_key))
-                            count = Cache[cache_key];
-                        else
-                        {
-                            count = GetElementCount(subtemplate, steps - 1);
-                            // This one line is frustrating and I think this is what overcomplicates this entire funciton
-                            // The internal pairs have duplicates in them the way I generate them. For example NNCB becomes NCN, NBC, CHB thus I have to remove the duplicates..
-                            count[template[i]] -= 1; 
-                            Cache[cache_key] = count;
-                        }
-                    }
-                    else
-                    {
-                        count = GetElementCount(subtemplate, steps - 1);
-                    }
-                    foreach (var key in count.Keys)
-                    {
-                        counts[key] += count[key];
-                    };
-                }
-            }
-            return counts;
+            var middle = Rules[Tuple.Create(left, right)];
+            counts[middle]++;
+            var counter_left = GetElementCount(left, middle, steps - 1);
+            var counter_right = GetElementCount(middle, right, steps - 1);
+            var result = counts.Combine(counter_left).Combine(counter_right);
+            Cache[key] = result;
+            return result;
         }
 
-        private object Solve(BigInteger steps)
+        private object Solve(int steps)
         {
-            var counts = GetElementCount(Template, steps);
+            var counts = GetElementDict(Template.ToCharArray());
+            for (int i = 0; i < Template.Length-1; i++)
+            {
+                Console.WriteLine("{0}{1}",Template[i], Template[i+1]);
+                var count = GetElementCount(Template[i], Template[i+1], steps);
+                counts = counts.Combine(count);
+            }
             Console.WriteLine(counts.ToDebugString());
             return counts.Values.Max() - counts.Values.Min();
         }
@@ -90,7 +79,6 @@ namespace AOC2021
 
         public object SolvePart2()
         {
-            Cache.Clear();
             return Solve(40);
         }
     }
