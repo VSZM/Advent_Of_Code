@@ -42,7 +42,7 @@ namespace AOC2021
             if (IsHorizontal)
             {
                 var direction = Math.Sign(EndX - StartX);
-                foreach (var point in EnumerableUtilities.RangePython(StartX, EndX + direction, direction).Select(x => new Point(x, StartY)))
+                foreach (var point in Utilities.RangePython(StartX, EndX + direction, direction).Select(x => new Point(x, StartY)))
                 {
                     yield return point;
                 }
@@ -50,7 +50,7 @@ namespace AOC2021
             else if (IsVertical)
             {
                 var direction = Math.Sign(EndY - StartY);
-                foreach (var point in EnumerableUtilities.RangePython(StartY, EndY + direction, direction).Select(y => new Point(StartX, y)))
+                foreach (var point in Utilities.RangePython(StartY, EndY + direction, direction).Select(y => new Point(StartX, y)))
                 {
                     yield return point;
                 }
