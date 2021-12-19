@@ -43,9 +43,9 @@ namespace AOC2021
             }
         }
 
-        public int Rows { get; }
-        public int Cols { get; }
-        public int[,] Grid { get; }
+        public int Rows { get; set; }
+        public int Cols { get; set; }
+        public int[,] Grid { get; set; }
 
         private double h1(Point p)
         {
@@ -98,7 +98,7 @@ namespace AOC2021
                 GetUnvisitedNeigbours(tip, path.PathSoFar).ForEach(p =>
                 {
                     int current_best = int.MaxValue;
-                    if(optimal_costs.ContainsKey(p))
+                    if (optimal_costs.ContainsKey(p))
                         current_best = optimal_costs[p];
 
                     var new_cost = path.CostSoFar + Grid[p.X, p.Y];
@@ -123,7 +123,54 @@ namespace AOC2021
 
         public object SolvePart2()
         {
-            throw new NotImplementedException();
+            var new_grid = new int[Rows * 5, Cols * 5];
+            for (int i = 0; i < Rows; i++) // Copying into first section
+            {
+                for (int j = 0; j < Cols; j++)
+                {
+                    new_grid[i, j] = Grid[i, j];
+                }
+            }
+
+            for (int col = 1; col < 5; col++) // Expanding first row
+            {
+                for (int i = 0; i < Rows; i++)
+                {
+                    for (int j = 0; j < Cols; j++)
+                    {
+                        new_grid[i, j + col * Cols] = new_grid[i, j + (col - 1) * Cols] + 1;
+                        if (new_grid[i, j + col * Cols] == 10)
+                        {
+                            new_grid[i, j + col * Cols] = 1;
+                        }
+                    }
+                }
+            }
+
+
+            for (int row = 1; row < 5; row++)// Expanding rows
+            {
+                for (int col = 0; col < 5; col++)
+                {
+                    for (int i = 0; i < Rows; i++)
+                    {
+                        for (int j = 0; j < Cols; j++)
+                        {
+                            new_grid[i + row * Rows, j + col * Cols] = new_grid[i + (row - 1) * Rows, j + col * Cols] + 1;
+                            if (new_grid[i + row * Rows, j + col * Cols] == 10)
+                            {
+                                new_grid[i + row * Rows, j + col * Cols] = 1;
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Utilities.PrintGridNumbers(new_grid);
+            Grid = new_grid;
+            Rows = Rows * 5;
+            Cols = Cols * 5;
+            return Solve();
         }
     }
 }
