@@ -108,9 +108,9 @@ namespace AOC2021
                 Console.WriteLine("After padding:");
                 Utilities.PrintGridNumbers(grid);
                 var next_grid = (int[,])grid.Clone();
-                for (int i = 1; i < grid.GetLength(0) - 1; i++)
+                for (int i = 2; i < grid.GetLength(0) - 1; i++)
                 {
-                    for (int j = 1; j < grid.GetLength(1) - 1; j++)
+                    for (int j = 2; j < grid.GetLength(1) - 1; j++)
                     {
                         var binary = grid[i - 1, j - 1].ToString() + grid[i - 1, j].ToString() + grid[i - 1, j + 1].ToString() +
                                      grid[i, j - 1].ToString() + grid[i, j].ToString() + grid[i, j + 1].ToString() +
@@ -118,12 +118,29 @@ namespace AOC2021
                         next_grid[i, j] = Algo[Convert.ToInt32(binary, 2)] == '#' ? 1 : 0;
                     }
                 }
+                //grid = Remove_Border(next_grid, 0);
                 grid = next_grid;
+
                 Console.WriteLine("After Algo:");
                 Utilities.PrintGridNumbers(grid);
                 n--;
             }
             return grid;
+        }
+
+        private int[,] Remove_Border(int[,] grid, int border_size)
+        {
+
+            var length = grid.GetLength(0);
+            var new_grid = new int[length - 2 * border_size, length - 2 * border_size];
+            for (int i = 0; i < new_grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < new_grid.GetLength(1); j++)
+                {
+                    new_grid[i, j] = grid[i + 1, j + 1];
+                }
+            }
+            return new_grid;
         }
 
         /**
