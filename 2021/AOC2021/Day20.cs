@@ -108,9 +108,9 @@ namespace AOC2021
                 Console.WriteLine("After padding:");
                 Utilities.PrintGridNumbers(grid);
                 var next_grid = (int[,])grid.Clone();
-                for (int i = 2; i < grid.GetLength(0) - 1; i++)
+                for (int i = 1; i < grid.GetLength(0) - 1; i++)
                 {
-                    for (int j = 2; j < grid.GetLength(1) - 1; j++)
+                    for (int j = 1; j < grid.GetLength(1) - 1; j++)
                     {
                         var binary = grid[i - 1, j - 1].ToString() + grid[i - 1, j].ToString() + grid[i - 1, j + 1].ToString() +
                                      grid[i, j - 1].ToString() + grid[i, j].ToString() + grid[i, j + 1].ToString() +
