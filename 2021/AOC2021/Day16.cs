@@ -88,17 +88,17 @@ namespace AOC2021
                 case 0:
                     return Operands.Select(op => op.Evaluate()).Sum();
                 case 1:
-                    return Operands.Select(op => op.Evaluate()).Aggregate(1l, (a, b) => a * b);
+                    return Operands.Select(op => op.Evaluate()).Aggregate(1L, (a, b) => a * b);
                 case 2:
                     return Operands.Select(op => op.Evaluate()).Min();
                 case 3:
                     return Operands.Select(op => op.Evaluate()).Max();
                 case 5:
-                    return Operands[0].Evaluate() > Operands[1].Evaluate() ? 1l : 0l;
+                    return Operands[0].Evaluate() > Operands[1].Evaluate() ? 1L : 0L;
                 case 6:
-                    return Operands[0].Evaluate() < Operands[1].Evaluate() ? 1l : 0l;
+                    return Operands[0].Evaluate() < Operands[1].Evaluate() ? 1L : 0L;
                 case 7:
-                    return Operands[0].Evaluate() == Operands[1].Evaluate() ? 1l : 0l;
+                    return Operands[0].Evaluate() == Operands[1].Evaluate() ? 1L : 0L;
                 default:
                     throw new NotImplementedException();
             }
