@@ -75,38 +75,26 @@ namespace AOC2021
 
         private long SolveSlow(List<Instruction> instructions)
         {
-            int minX = instructions.Where(i => i.is_on).Select(i => Math.Min(i.x_from, i.x_to)).Min();
-            int minY = instructions.Where(i => i.is_on).Select(i => Math.Min(i.y_from, i.y_to)).Min();
-            int minZ = instructions.Where(i => i.is_on).Select(i => Math.Min(i.z_from, i.z_to)).Min();
-            int maxX = instructions.Where(i => i.is_on).Select(i => Math.Max(i.x_from, i.x_to)).Max();
-            int maxY = instructions.Where(i => i.is_on).Select(i => Math.Max(i.y_from, i.y_to)).Max();
-            int maxZ = instructions.Where(i => i.is_on).Select(i => Math.Max(i.z_from, i.z_to)).Max();
+            HashSet<(int x, int y, int z)> cuboids = new HashSet<(int x, int y, int z)>();
 
-            long count = 0;
-
-            var ons = instructions.Where(i => i.is_on).ToList();
-            var offs = instructions.Where(i => !i.is_on).ToList();
-
-            using (var pb = new ProgressBar(maxX - minX, "% Progress"))
+            foreach (var instruction in instructions)
             {
-                Parallel.For(minX, maxX + 1, new ParallelOptions { MaxDegreeOfParallelism = 128 }, x =>
+                for (int x = instruction.x_from; x <= instruction.x_to; x++)
                 {
-                    pb.Tick();
-                    for (int y = minY; y <= maxY; y++)
+                    for (int y = instruction.y_from; y <= instruction.y_to; y++)
                     {
-                        for (int z = minZ; z <= maxZ; z++)
+                        for (int z = instruction.z_from; z < instruction.z_to; z++)
                         {
-                            var containers = instructions.Where(i => Contains(i, (x, y, z)));
-                            if (containers.Count() == 0 || !containers.Last().is_on)
-                            {
-                                continue;
-                            }
-                            Interlocked.Increment(ref count);
+                            if(instruction.is_on)
+                                cuboids.Add((x, y, z));
+                            else
+                                cuboids.Remove((x, y, z));
                         }
                     }
-                });
+                }
             }
-            return count;
+
+            return cuboids.Count;
         }
 
 
@@ -129,13 +117,13 @@ namespace AOC2021
                 pairs.Add((boundaries[0], boundaries[0]));
                 for (int i = 1; i < boundaries.Count; i++)
                 {
-                    pairs.Add((boundaries[i], boundaries[i]));
                     var start = boundaries[i - 1] + 1;
                     var end = boundaries[i] - 1;
                     if (end - start >= 0)
                     {
                         pairs.Add((start, end));
                     }
+                    pairs.Add((boundaries[i], boundaries[i]));
                 }
                 return pairs;
             };
@@ -162,14 +150,14 @@ namespace AOC2021
                             var zbox = instructions.Where(instruction => (z_start >= instruction.z_from && z_start <= instruction.z_to)
                                                                         && (z_end >= instruction.z_from && z_end <= instruction.z_to)).ToHashSet();
 
-                            var intersection_of_limits = xbox.Intersect(ybox).Intersect(zbox).ToList();
+                            var intersection_of_limits = xbox.Intersect(ybox).Intersect(zbox);
                             if (intersection_of_limits.Count() == 0)
                                 continue;
 
-                            var last_instruction_of_intersection = intersection_of_limits.OrderByDescending(instruction => instructions.IndexOf(instruction)).First();
+                            var last_instruction_of_intersection = intersection_of_limits.OrderByDescending(instruction => instruction.id).First();
                             if (last_instruction_of_intersection.is_on)
                             {
-                                count += (x_end - x_start + 1) * (y_end - y_start + 1) * (z_end - z_start + 1);
+                                count += new BigInteger(x_end - x_start + 1) * new BigInteger(y_end - y_start + 1) * new BigInteger(z_end - z_start + 1);
                             }
                         }
                     }
@@ -189,7 +177,7 @@ namespace AOC2021
 
         public object SolvePart2()
         {
-            return (Solve(instructions), SolveSlow(instructions));
+            return Solve(instructions);
         }
     }
 }
