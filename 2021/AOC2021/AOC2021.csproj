@@ -16,6 +16,7 @@
     <None Remove="System.Drawing.Primitives" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="ShellProgressBar" Version="5.1.0" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>

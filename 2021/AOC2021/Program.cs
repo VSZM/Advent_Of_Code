@@ -12,7 +12,7 @@ namespace AOC2021
             var lines = File.ReadAllLines("input.txt");
             var sw = new Stopwatch();
             sw.Start();
-            var solver = new Day21(lines);
+            var solver = new Day22(lines);
             sw.Stop();
             var precalc_time = sw.Elapsed;
             Console.WriteLine("Precalculations took: {0}", precalc_time);
@@ -28,7 +28,7 @@ namespace AOC2021
             sw.Stop();
             var part2_time = sw.Elapsed;
             Console.WriteLine("{0} Part 2 Solution: < {1} > Took: {2}", solver.GetType().Name, part2_solution, part2_time);
-            Console.WriteLine("Complete runtime: {0}", precalc_time + part2_time + part2_time);
+            Console.WriteLine("Complete runtime: {0}", precalc_time + part1_time + part2_time);
         }
     }
 }
