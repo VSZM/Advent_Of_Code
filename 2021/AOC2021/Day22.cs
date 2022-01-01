@@ -101,7 +101,9 @@ namespace AOC2021
         // https://stackoverflow.com/a/66370641/1564252
         private BigInteger Solve(List<Instruction> instructions)
         {
+            instructions.Reverse();
             BigInteger count = 0;
+            object count_lock = new object();
             // These are the boundaries on each axis
             var xs = instructions.SelectMany(instruction => new List<int>() { instruction.x_from })
                                     .Concat(instructions.SelectMany(instruction => new List<int>() { instruction.x_to })).Distinct().OrderBy(x => x).ToList();
@@ -134,34 +136,37 @@ namespace AOC2021
 
             using (var pb = new ProgressBar(xpairs.Count, "% Progress"))
             {
-                foreach (var (x_start, x_end) in xpairs)
+                Parallel.ForEach(xpairs, new ParallelOptions { MaxDegreeOfParallelism = 16 }, xpair =>
                 {
                     pb.Tick();
+                    var x_start = xpair.x_start;
+                    var x_end = xpair.x_end;
                     var xbox = instructions.Where(instruction => (x_start >= instruction.x_from && x_start <= instruction.x_to)
-                                                                        && (x_end >= instruction.x_from && x_end <= instruction.x_to)).ToHashSet();
+                                                                        && (x_end >= instruction.x_from && x_end <= instruction.x_to));
 
                     foreach (var (y_start, y_end) in ypairs)
                     {
-                        var ybox = instructions.Where(instruction => (y_start >= instruction.y_from && y_start <= instruction.y_to)
-                                                                        && (y_end >= instruction.y_from && y_end <= instruction.y_to)).ToHashSet();
+                        var ybox = xbox.Where(instruction => (y_start >= instruction.y_from && y_start <= instruction.y_to)
+                                                                        && (y_end >= instruction.y_from && y_end <= instruction.y_to));
 
                         foreach (var (z_start, z_end) in zpairs)
                         {
-                            var zbox = instructions.Where(instruction => (z_start >= instruction.z_from && z_start <= instruction.z_to)
-                                                                        && (z_end >= instruction.z_from && z_end <= instruction.z_to)).ToHashSet();
+                            var last_instruction_of_intersection = ybox.Where(instruction => (z_start >= instruction.z_from && z_start <= instruction.z_to)
+                                                                        && (z_end >= instruction.z_from && z_end <= instruction.z_to)).FirstOrDefault();
 
-                            var intersection_of_limits = xbox.Intersect(ybox).Intersect(zbox);
-                            if (intersection_of_limits.Count() == 0)
+                            if (last_instruction_of_intersection == null)
                                 continue;
 
-                            var last_instruction_of_intersection = intersection_of_limits.OrderByDescending(instruction => instruction.id).First();
                             if (last_instruction_of_intersection.is_on)
                             {
-                                count += new BigInteger(x_end - x_start + 1) * new BigInteger(y_end - y_start + 1) * new BigInteger(z_end - z_start + 1);
+                                lock (count_lock)
+                                {
+                                    count += new BigInteger(x_end - x_start + 1) * new BigInteger(y_end - y_start + 1) * new BigInteger(z_end - z_start + 1);
+                                }
                             }
                         }
                     }
-                }
+                });
             }
 
             return count;
