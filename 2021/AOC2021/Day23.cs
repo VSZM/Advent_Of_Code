@@ -18,10 +18,11 @@ namespace AOC2021
         public Stack<char> roomC = new Stack<char>();
         public Stack<char> roomD = new Stack<char>();
         public Dictionary<char, Stack<char>> rooms = new Dictionary<char, Stack<char>>();
-        private int? hashcode;
+
+        private string repr = null;
 
         // 11 slots
-        public List<char> hallway = new List<char>() { '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.' };
+        public string hallway = "...........";
         public State()
         {
             rooms['A'] = roomA;
@@ -32,32 +33,12 @@ namespace AOC2021
 
         public override int GetHashCode()
         {
-            if (hashcode != null)
-                return hashcode.Value;
-
-            int hc = 0;
-            foreach (var c in hallway)
-                hc ^= c.GetHashCode();
-            foreach (var c in roomA)
-                hc ^= c.GetHashCode();
-            foreach (var c in roomB)
-                hc ^= c.GetHashCode();
-            foreach (var c in roomC)
-                hc ^= c.GetHashCode();
-            foreach (var c in roomD)
-                hc ^= c.GetHashCode();
-
-            hashcode = hc;
-            return hc;
+            return ToString().GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            State other = obj as State;
-            if (other == null)
-                return false;
-            return Enumerable.SequenceEqual(hallway, other.hallway) && Enumerable.SequenceEqual(roomA, other.roomA) &&
-                    Enumerable.SequenceEqual(roomB, other.roomB) && Enumerable.SequenceEqual(roomC, other.roomC) && Enumerable.SequenceEqual(roomD, other.roomD);
+            return obj.ToString() == this.ToString();
         }
 
 
@@ -72,18 +53,23 @@ namespace AOC2021
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
-            var aList = string.Join("", roomA.ToList()).PadLeft(roomCapacity, '.');
-            var bList = string.Join("", roomB.ToList()).PadLeft(roomCapacity, '.');
-            var cList = string.Join("", roomC.ToList()).PadLeft(roomCapacity, '.');
-            var dList = string.Join("", roomD.ToList()).PadLeft(roomCapacity, '.');
+            if (this.repr == null)
+            {
+                StringBuilder sb = new StringBuilder();
+                var aList = string.Join("", roomA.ToList()).PadLeft(roomCapacity, '.');
+                var bList = string.Join("", roomB.ToList()).PadLeft(roomCapacity, '.');
+                var cList = string.Join("", roomC.ToList()).PadLeft(roomCapacity, '.');
+                var dList = string.Join("", roomD.ToList()).PadLeft(roomCapacity, '.');
 
-            sb.Append(new string('#', hallway.Count + 2)).AppendLine();
-            sb.Append('#').Append(string.Join("", hallway)).Append('#').AppendLine();
-            sb.Append("###").Append(aList.ToList()[0]).Append('#').Append(bList.ToList()[0]).Append('#').Append(cList.ToList()[0]).Append('#').Append(dList.ToList()[0]).Append("###").AppendLine();
-            sb.Append("  #").Append(aList.ToList()[1]).Append('#').Append(bList.ToList()[1]).Append('#').Append(cList.ToList()[1]).Append('#').Append(dList.ToList()[1]).Append("#  ").AppendLine();
-            sb.Append("  ").Append(new string('#', 9)).Append("  ").AppendLine();
-            return sb.ToString();
+                sb.Append(new string('#', hallway.Length + 2)).AppendLine();
+                sb.Append('#').Append(string.Join("", hallway)).Append('#').AppendLine();
+                sb.Append("###").Append(aList.ToList()[0]).Append('#').Append(bList.ToList()[0]).Append('#').Append(cList.ToList()[0]).Append('#').Append(dList.ToList()[0]).Append("###").AppendLine();
+                sb.Append("  #").Append(aList.ToList()[1]).Append('#').Append(bList.ToList()[1]).Append('#').Append(cList.ToList()[1]).Append('#').Append(dList.ToList()[1]).Append("#  ").AppendLine();
+                sb.Append("  ").Append(new string('#', 9)).Append("  ").AppendLine();
+
+                repr = sb.ToString();
+            }
+            return repr;
         }
 
         internal bool IsEnd()
@@ -112,7 +98,7 @@ namespace AOC2021
         internal List<State> GetNextPossibleStates()
         {
             var next_states = new List<State>();
-            for (int i = 0; i < hallway.Count; i++)// Going from Hallway to one of the rooms
+            for (int i = 0; i < hallway.Length; i++)// Going from Hallway to one of the rooms
             {
                 var pod = hallway[i];
                 if (pod != '.' && rooms[pod].Count < roomCapacity && IsNotBlocked(i, Day23.ROOM_INDEX[pod]) && !IsInvaded(pod))
@@ -122,7 +108,9 @@ namespace AOC2021
                     var new_state = (State)this.Clone();
                     var step_cost = Day23.STEP_COST[pod];
                     new_state.costSoFar += (room_distance + room_entry_cost) * step_cost;
-                    new_state.hallway[i] = '.';
+                    var new_hallway = hallway.ToCharArray();
+                    new_hallway[i] = '.';
+                    new_state.hallway = new string(new_hallway);
                     new_state.rooms[pod].Push(pod);
                     next_states.Add(new_state);
                 }
@@ -142,7 +130,9 @@ namespace AOC2021
                     var new_state = (State)this.Clone();
                     new_state.costSoFar += (stop_distance + room_exit_cost) * step_cost;
                     new_state.rooms[roomkey].Pop();
-                    new_state.hallway[stop] = pod;
+                    var new_hallway = hallway.ToCharArray();
+                    new_hallway[stop] = pod;
+                    new_state.hallway = new string(new_hallway);
                     next_states.Add(new_state);
                 }
             }
@@ -181,7 +171,7 @@ namespace AOC2021
             new_state.rooms['B'] = new_state.roomB;
             new_state.rooms['C'] = new_state.roomC;
             new_state.rooms['D'] = new_state.roomD;
-            new_state.hallway = new List<char>(hallway);
+            new_state.hallway = new string(hallway);
             return new_state;
         }
     }
