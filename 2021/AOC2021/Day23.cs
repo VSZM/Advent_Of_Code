@@ -62,7 +62,7 @@ namespace AOC2021
                 var dList = string.Join("", roomD.ToList()).PadLeft(roomCapacity, '.');
 
                 sb.Append(new string('#', hallway.Length + 2)).AppendLine();
-                sb.Append('#').Append(string.Join("", hallway)).Append('#').AppendLine();
+                sb.Append('#').Append(hallway).Append('#').AppendLine();
                 sb.Append("###").Append(aList.ToList()[0]).Append('#').Append(bList.ToList()[0]).Append('#').Append(cList.ToList()[0]).Append('#').Append(dList.ToList()[0]).Append("###").AppendLine();
                 sb.Append("  #").Append(aList.ToList()[1]).Append('#').Append(bList.ToList()[1]).Append('#').Append(cList.ToList()[1]).Append('#').Append(dList.ToList()[1]).Append("#  ").AppendLine();
                 sb.Append("  ").Append(new string('#', 9)).Append("  ").AppendLine();
@@ -179,17 +179,36 @@ namespace AOC2021
     internal class Day23 : ISolvable
     {
 
+        /*
+           
+            Test:
+            #############
+            #...........#
+            ###B#C#B#D###
+              #A#D#C#A#
+              #########
+        
+            Input:
+            #############
+            #...........#
+            ###D#A#D#C###
+              #B#C#B#A#
+              #########
+         
+         
+         */
+
         public Day23(string[] lines)
         {
             Start = new State();
-            Start.roomA.Push('A');
-            Start.roomA.Push('B');
-            Start.roomB.Push('D');
-            Start.roomB.Push('C');
-            Start.roomC.Push('C');
-            Start.roomC.Push('B');
-            Start.roomD.Push('A');
-            Start.roomD.Push('D');
+            Start.roomA.Push(lines[3][3]);
+            Start.roomA.Push(lines[2][3]);
+            Start.roomB.Push(lines[3][5]);
+            Start.roomB.Push(lines[2][5]);
+            Start.roomC.Push(lines[3][7]);
+            Start.roomC.Push(lines[2][7]);
+            Start.roomD.Push(lines[3][9]);
+            Start.roomD.Push(lines[2][9]);
             Console.WriteLine(Start);
         }
 
@@ -203,7 +222,7 @@ namespace AOC2021
             var openSet = new HashSet<State>();
             int nodes_visited = 0;
 
-            using (ProgressBar pb = new ProgressBar(12581, "Path progress"))
+            using (ProgressBar pb = new ProgressBar(12521, "Path progress"))
                 while (open.Count > 0)
                 {
                     var state = open.Dequeue();
@@ -273,10 +292,11 @@ namespace AOC2021
         private int H(State state)
         {
             int H = 0;
+            return H;
             // Cost of moving from rooms
             H += state.rooms.Keys.Select(room => state.rooms[room].Where(pod => pod != room).Select(pod => COST_ESTIMATE[(room, pod)]).Sum()).Sum();
             // Cost of navigating hallway
-            for (int i = 0; i < state.hallway.Count; i++)
+            for (int i = 0; i < state.hallway.Length; i++)
             {
                 if (state.hallway[i] != '.')
                 {
