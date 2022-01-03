@@ -18,6 +18,7 @@ namespace AOC2021
         public Stack<char> roomC = new Stack<char>();
         public Stack<char> roomD = new Stack<char>();
         public Dictionary<char, Stack<char>> rooms = new Dictionary<char, Stack<char>>();
+        public State parent = null;
 
         private string repr = null;
 
@@ -63,8 +64,11 @@ namespace AOC2021
 
                 sb.Append(new string('#', hallway.Length + 2)).AppendLine();
                 sb.Append('#').Append(hallway).Append('#').AppendLine();
-                sb.Append("###").Append(aList.ToList()[0]).Append('#').Append(bList.ToList()[0]).Append('#').Append(cList.ToList()[0]).Append('#').Append(dList.ToList()[0]).Append("###").AppendLine();
-                sb.Append("  #").Append(aList.ToList()[1]).Append('#').Append(bList.ToList()[1]).Append('#').Append(cList.ToList()[1]).Append('#').Append(dList.ToList()[1]).Append("#  ").AppendLine();
+                for (int i = 0; i < roomCapacity; i++)
+                {
+                    sb.Append("###").Append(aList.ToList()[i]).Append('#').Append(bList.ToList()[i]).Append('#').Append(cList.ToList()[i]).Append('#').Append(dList.ToList()[i]).Append("###").AppendLine();
+
+                }
                 sb.Append("  ").Append(new string('#', 9)).Append("  ").AppendLine();
 
                 repr = sb.ToString();
@@ -112,7 +116,9 @@ namespace AOC2021
                     new_hallway[i] = '.';
                     new_state.hallway = new string(new_hallway);
                     new_state.rooms[pod].Push(pod);
-                    next_states.Add(new_state);
+                    new_state.parent = this;
+                    if (!PathContainsState(new_state))
+                        next_states.Add(new_state);
                 }
             }
 
@@ -133,11 +139,25 @@ namespace AOC2021
                     var new_hallway = hallway.ToCharArray();
                     new_hallway[stop] = pod;
                     new_state.hallway = new string(new_hallway);
-                    next_states.Add(new_state);
+                    new_state.parent = this;
+                    if (!PathContainsState(new_state))
+                        next_states.Add(new_state);
                 }
             }
 
             return next_states;
+        }
+
+        private bool PathContainsState(State new_state)
+        {
+            State current = this;
+            while (current != null)
+            {
+                if (current == new_state)
+                    return true;
+                current = current.parent;
+            }
+            return false;
         }
 
         private bool IsInvaded(char pod)
@@ -174,6 +194,25 @@ namespace AOC2021
             new_state.hallway = new string(hallway);
             return new_state;
         }
+
+        public void PrintPath()
+        {
+            State current = this;
+            Stack<State> path = new Stack<State>();
+            do
+            {
+                path.Push(current);
+                current = current.parent;
+            } while (current != null);
+
+            while (path.Count > 0)
+            {
+                current = path.Pop();
+                Console.WriteLine(current);
+                Console.WriteLine(current.costSoFar);
+                Console.WriteLine(new String('=', 20) + ">");
+            }
+        }
     }
 
     internal class Day23 : ISolvable
@@ -209,46 +248,47 @@ namespace AOC2021
             Start.roomC.Push(lines[2][7]);
             Start.roomD.Push(lines[3][9]);
             Start.roomD.Push(lines[2][9]);
-            Console.WriteLine(Start);
         }
 
         public State Start { get; }
 
-        private int SolveShortestPathSearch(State start)
+
+        private State SolveShortestPathSearch(State start)
         {
+            Console.WriteLine("START");
+            Console.WriteLine(start);
+            Console.WriteLine();
             var open = new PriorityQueue<State, int>();
+            var optimal_costs = new Dictionary<State, int>();
             open.Enqueue(start, start.costSoFar + H(start));
-            var visited = new HashSet<State>();
-            var openSet = new HashSet<State>();
+            optimal_costs[start] = 0;
             int nodes_visited = 0;
 
-            using (ProgressBar pb = new ProgressBar(12521, "Path progress"))
+
                 while (open.Count > 0)
                 {
                     var state = open.Dequeue();
-                    openSet.Remove(state);
-                    if (visited.Contains(state))
-                        continue;
-                    pb.Tick(state.costSoFar + H(state));
                     if (state.IsEnd())
                     {
-                        pb.Dispose();
                         Console.WriteLine("Search Cost: {0}", nodes_visited);
-                        return state.costSoFar;
+                        return state;
                     }
 
-                    var next_states = state.GetNextPossibleStates().Where(state => !visited.Contains(state) && !openSet.Contains(state));
-                    next_states.ToList().ForEach(state =>
+                    state.GetNextPossibleStates().ForEach(state =>
                         {
-                            open.Enqueue(state, state.costSoFar + H(state));
-                            openSet.Add(state);
+                            int current_best = optimal_costs.GetValueOrDefault(state, int.MaxValue);
+
+                            if(state.costSoFar < current_best)
+                            {
+                                optimal_costs[state] = state.costSoFar;
+                                open.Enqueue(state, state.costSoFar + H(state));
+                            }
                         }
                     );
                     nodes_visited++;
-                    visited.Add(state);
                 }
 
-            return -1;
+            return start;
         }
 
 
@@ -292,7 +332,7 @@ namespace AOC2021
         private int H(State state)
         {
             int H = 0;
-            return H;
+            //return H;
             // Cost of moving from rooms
             H += state.rooms.Keys.Select(room => state.rooms[room].Where(pod => pod != room).Select(pod => COST_ESTIMATE[(room, pod)]).Sum()).Sum();
             // Cost of navigating hallway
@@ -308,12 +348,43 @@ namespace AOC2021
 
         public object SolvePart1()
         {
-            return SolveShortestPathSearch(Start);
+            var win_state =  SolveShortestPathSearch(Start);
+            win_state.PrintPath();
+            return win_state.costSoFar;
         }
 
         public object SolvePart2()
         {
-            return null;
+            /* 
+                #D#C#B#A#
+                #D#B#A#C#
+             */
+            Start.roomCapacity = 4;
+            char tmp;
+            tmp = Start.roomA.Pop();
+            Start.roomA.Push('D');
+            Start.roomA.Push('D');
+            Start.roomA.Push(tmp);
+
+            tmp = Start.roomB.Pop();
+            Start.roomB.Push('B');
+            Start.roomB.Push('C');
+            Start.roomB.Push(tmp);
+
+            tmp = Start.roomC.Pop();
+            Start.roomC.Push('A');
+            Start.roomC.Push('B');
+            Start.roomC.Push(tmp);
+
+            tmp = Start.roomD.Pop();
+            Start.roomD.Push('C');
+            Start.roomD.Push('A');
+            Start.roomD.Push(tmp);
+
+
+            var win_state = SolveShortestPathSearch(Start);
+            win_state.PrintPath();
+            return win_state.costSoFar;
         }
     }
 }
