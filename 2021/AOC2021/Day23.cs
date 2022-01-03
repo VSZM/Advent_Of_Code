@@ -147,27 +147,6 @@ namespace AOC2021
                 }
             }
 
-            foreach (var roomkey in rooms.Keys)// Going from one room to another
-            {
-                if (rooms[roomkey].Count == 0 || (rooms[roomkey].Count == roomCapacity && !rooms[roomkey].Where(pod => pod != roomkey).Any()))//room empty or full
-                    continue;
-                var pod = rooms[roomkey].Peek();
-                var destination_room_index = Day23.ROOM_INDEX[pod];
-                var current_room_index = Day23.ROOM_INDEX[roomkey];
-                // Room full, or the same room, or path blocked, or occupied by intruder
-                if (destination_room_index == current_room_index || rooms[pod].Count == roomCapacity || !IsNotBlocked(current_room_index, destination_room_index) || IsInvaded(pod))
-                    continue;
-
-                var step_cost = Day23.STEP_COST[pod];
-                var room_exit_cost = roomCapacity - rooms[roomkey].Count + 1;
-                var room_entry_cost = roomCapacity - rooms[pod].Count;
-                var room_distance = Math.Abs(current_room_index - destination_room_index);
-                var new_state = (State)this.Clone();
-                new_state.costSoFar += (room_exit_cost + room_entry_cost + room_distance) * step_cost;
-                new_state.rooms[roomkey].Pop();
-                new_state.rooms[pod].Push(pod);
-                next_states.Add(new_state);
-            }
             return next_states;
         }
 
