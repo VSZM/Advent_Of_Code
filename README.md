@@ -9,7 +9,7 @@ http://adventofcode.com
 
 ## 2021 Proof
 
-![2021.gif](2021.gif)
+![2021.gif](2021.png)
 
 
 Go give it a try, the problems are great!
