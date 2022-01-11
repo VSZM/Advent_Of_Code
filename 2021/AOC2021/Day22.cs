@@ -66,13 +66,6 @@ namespace AOC2021
             }
         }
 
-        private bool Contains(Instruction instruction, (int x, int y, int z) point)
-        {
-            return instruction.x_from <= point.x && instruction.x_to >= point.x &&
-                instruction.y_from <= point.y && instruction.y_to >= point.y &&
-                instruction.z_from <= point.z && instruction.z_to >= point.z;
-        }
-
         private long SolveSlow(List<Instruction> instructions)
         {
             HashSet<(int x, int y, int z)> cuboids = new HashSet<(int x, int y, int z)>();

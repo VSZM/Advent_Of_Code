@@ -12,7 +12,7 @@ namespace AOC2021
             var lines = File.ReadAllLines("input.txt");
             var sw = new Stopwatch();
             sw.Start();
-            var solver = new Day24(lines);
+            var solver = new Day25(lines);
             sw.Stop();
             var precalc_time = sw.Elapsed;
             Console.WriteLine("Precalculations took: {0}", precalc_time);

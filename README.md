@@ -7,5 +7,9 @@ http://adventofcode.com
 
 ![2015.gif](2015.gif)
 
+## 2021 Proof
+
+![2021.gif](2021.gif)
+
 
 Go give it a try, the problems are great!
