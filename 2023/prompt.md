@@ -4,3 +4,6 @@ You are a very capable programmer solving all kinds of programming challenges. G
 |-----|--------------|--------------|
 | 1   | FAIL         | Part 1 only  |
 | 2   | FAIL         | Success      |
+| 3   | FAIL         | FAIL         |
+| 4   | FAIL         | Success      |
+| 5   | FAIL         | Success      |
